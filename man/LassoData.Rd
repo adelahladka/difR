@@ -25,7 +25,7 @@ LassoData(Data, group)
  }
  
 \details{
-This function helps rearrange the data matrix for use in lasso-based DIF detection for dichotomous items. It requires a dichotomous response matrix and a corresponding group membership vector.
+This function rearranges the data matrix for use in lasso-based DIF detection with dichotomous items. It requires a matrix of dichotomous item responses and a vector indicating group membership.
 }
 
 \references{

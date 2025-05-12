@@ -58,7 +58,7 @@ Three nested models are fit per item:
 }
 Models are compared using either likelihood-ratio or Wald tests.
 
-When \code{match = "restscore"}, the matching variable is defined as the sum score excluding the item being tested, providing a less contaminated estimate of ability.
+When \code{match = "restscore"}, the matching variable is defined as the sum score excluding the item being tested, providing a less contaminated estimate.
 
 When \code{purify = TRUE}, the algorithm iteratively refines the anchor set by excluding detected DIF items and updating scores.
 

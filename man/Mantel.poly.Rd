@@ -1,7 +1,7 @@
 
 \name{Mantel.poly}
 \alias{Mantel.poly}
-\title{Mantel-Haenszel DIF Detection for Polytomous Items}
+\title{Mantel DIF Detection for Polytomous Items}
 \description{
   Implements the Mantel-Haenszel (MH) test for detecting Differential Item Functioning (DIF) in polytomous items. 
 }
