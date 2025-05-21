@@ -1,8 +1,8 @@
 \name{LogistikPoly}
 \alias{LogistikPoly}
-\title{Detection of DIF for polytomous (ordinal) item using cumulative logistic regression}
+\title{Detection of DIF in polytomous (ordinal) items using cumulative logistic regression}
 \description{
-  This function implements a method for detecting Differential Item Functioning (DIF) for ordinal response items using cumulative logistic regression (\code{\link[VGAM]{vglm}} with the \code{propodds} family). Multiple contrast types and statistical criteria are available for testing DIF.
+  This function implements a method for detecting Differential Item Functioning (DIF) in ordinal response items using cumulative logistic regression (\code{\link[VGAM]{vglm}} with the \code{propodds} family).
 }
 \usage{
 LogistikPoly(data, member, member.type = "group", match = "score",
@@ -10,7 +10,7 @@ LogistikPoly(data, member, member.type = "group", match = "score",
              all.cov = FALSE)
 }
 \arguments{
-  \item{data}{A data.frame or matrix of item responses (ordinal scale), with one column per item.}
+  \item{data}{A data.frame or matrix of item responses (ordinal scale), with one row per subject, one column per item.}
   \item{member}{A vector indicating group membership (e.g., reference vs. focal group).}
   \item{member.type}{Type of the group variable. Use \code{"group"} (default) for a categorical variable; a continuous covariate may also be provided.}
  \item{match}{matching variable: \code{"score"}, \code{"restscore"}, or an external numeric vector.}
@@ -36,11 +36,11 @@ A list with the following elements:
   \item{match}{Indicates the type of matching method used ("score" or custom variable).}
 }
 \details{
-This function compares nested cumulative logistic regression models to detect DIF in ordinal items. The full model includes group membership and its interaction with the matching variable (depending on the selected \code{type}), while the reduced model excludes group-related terms.
+This function compares nested cumulative logistic regression models to detect DIF in polytomous (ordinal) items. The full model includes group membership and its interaction with the matching variable (depending on the selected \code{type}).
 
-If \code{match = "score"}, the total test score (based on anchor items) is used as the matching variable. This is the classical approach and allows for the application of iterative purification, whereby items identified as DIF are progressively excluded from the anchor set and the matching score is updated. If \code{match = "restscore"}, the matching score is computed by excluding the item currently being tested from the total score. This prevents contamination of the matching variable by the target item and is especially useful when item-level bias is suspected. However, since the matching score varies across items, purification cannot be applied under this setting. Alternatively, users may provide an external numeric vector as a custom matching variable.
+If \code{match = "score"}, the total test score (based on anchor items) is used as the matching variable. This is the classical approach and allows for the application of iterative purification, whereby items identified as DIF are progressively excluded from the anchor set and the matching score is updated. If \code{match = "restscore"}, the matching score is computed by excluding the item currently being tested from the total score. However, since the matching score varies across items, purification cannot be applied under this setting. 
 
-The test statistic returned quantifies the presence of DIF. Larger values may indicate potential DIF.
+Larger test statistics values may indicate potential DIF.
 
 McKelvey-Zavoina pseudo R² is used to compute model fit for both the full and reduced models, and their difference (\code{deltaR2}) is also provided.
 

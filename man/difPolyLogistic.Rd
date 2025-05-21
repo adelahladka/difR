@@ -3,7 +3,7 @@
 
 \title{Logistic regression DIF statistics for polytomous (ordinal) items}
 
-\description{Computes DIF detection using logistic regression models for ordinal (polytomous) items. Supports purification, uniform and nonuniform DIF detection, various matching criteria, and statistical test types.}
+\description{Computes DIF detection using logistic regression models for ordinal (polytomous) items.}
 
 \usage{
 difPolyLogistic(Data, group, focal.name, anchor = NULL, member.type = "group",
@@ -14,7 +14,7 @@ output = c("out", "default"))
 
 \arguments{
 \item{Data}{a data frame or matrix: one row per respondent, one column per item. Items must be coded as ordinal variables.}
-\item{group}{a vector or column index/name from Data: specifies group membership. Can be binary (e.g., 0/1, M/F) or continuous (e.g., age).}
+\item{group}{a vector or column index/name from Data: specifies group membership.}
 \item{focal.name}{the label identifying the focal group (ignored if \code{member.type = "cont"}).}
 \item{anchor}{a vector of column indices or names specifying anchor (non-DIF) items. If \code{NULL} and \code{purify = FALSE}, all items are used as anchors. Ignored if \code{match} is not \code{"score"}.}
 \item{member.type}{\code{"group"} (default) if \code{group} is categorical; \code{"cont"} if \code{group} is continuous.}
@@ -38,7 +38,7 @@ Returns an object of class \code{"Logistic"}, a list with elements:
 \item{logitSe}{matrix of standard errors for \code{logitPar}.}
 \item{parM0, seM0}{parameter estimates and SEs for the null model (no DIF).}
 \item{cov.M0, cov.M1}{covariance matrices for null and full models (if \code{all.cov = TRUE}).}
-\item{deltaR2}{effect sizes (e.g., McKelvey & Zavoina \eqn{R^2}) per item.}
+\item{deltaR2}{effect sizes (McKelvey & Zavoina \eqn{R^2}) per item.}
 \item{alpha, thr}{alpha value and corresponding statistical threshold.}
 \item{DIFitems}{indices of items detected as DIF (or \code{"No DIF item detected"}).}
 \item{type, criterion, match, member.type}{echoed inputs.}
@@ -49,8 +49,7 @@ Returns an object of class \code{"Logistic"}, a list with elements:
 }
 
 \details{
-The function fits cumulative ordinal logistic regression models (via \code{VGAM::vglm}) to detect DIF in polytomous items.
-Three nested models are fit per item:
+The function fits cumulative ordinal logistic regression models (via \code{VGAM::vglm}) to detect DIF in polytomous items. Three nested models are fit per item:
 \itemize{
 \item \eqn{M\_0}: No DIF (only match effect)
 \item \eqn{M\_1}: Uniform DIF (match + group)
@@ -58,7 +57,7 @@ Three nested models are fit per item:
 }
 Models are compared using either likelihood-ratio or Wald tests.
 
-When \code{match = "restscore"}, the matching variable is defined as the sum score excluding the item being tested, providing a less contaminated estimate.
+When \code{match = "restscore"}, the matching variable is defined as the sum score excluding the item being tested.
 
 When \code{purify = TRUE}, the algorithm iteratively refines the anchor set by excluding detected DIF items and updating scores.
 

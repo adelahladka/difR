@@ -13,4 +13,3 @@ lassoDIF.coef <- function(out, nr.lambda){
 
 
 
-

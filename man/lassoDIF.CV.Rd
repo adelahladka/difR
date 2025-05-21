@@ -65,8 +65,8 @@ Dat    <-verbal[,1:20]
 Member <-verbal[,26]
 
 # Using cross-validation
-set.seed(1234) # appears to be sensitive to random number seed
-# probably due to randomizing the folds
+set.seed(1234) 
+
 cv.res <- lassoDIF.CV(Dat, Member, nfold=5)
 cv.res
 

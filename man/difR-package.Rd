@@ -11,19 +11,20 @@ The difR package contains several methods to detect DIF in dichotomous and polyt
  Methods currently available are:
   \enumerate{
   \item{Transformed Item Difficulties (TID) method (Angoff and Ford, 1973)}
+  \item{Breslow-Day statistics (Breslow and Day, 1980)}
   \item{Mantel-Haenszel for dichotomlous item (Holland and Thayer, 1988)}
-  \item{Mantel-Haenszel for polytomous item (Mantel, 1963)}
+  \item{Mantel for polytomous item (Mantel, 1963)}
+  \item{Generalized Mantel-Haenszel (Penfield, 2001)}
   \item{Standardization (Dorans and Kullick, 1986)}
   \item{Breslow-Day (Aguerri et al., 2009; Penfield, 2003)}
   \item{Logistic regression for dichotomlous item (Swaminathan and Rogers, 1990)}
   \item{Logistic regression for polytomous item (Zumbo, 1999)}
+  \item{Generalized logistic regression (Magis, Raiche, Beland and Gerard, 2011)}
   \item{Lasso regression (Magis, Tuerlinckx and De Boeck, 2015)}
   \item{SIBTEST (Shealy and Stout) and Crossing-SIBTEST (Chalmers, 2018; Li and Stout, 1996)}
   \item{Lord's chi-square test (Lord, 1980)}
   \item{Raju's area (Raju, 1990)}
-  \item{Likelihood-ratio test (Thissen, Steinberg and Wainer, 1988)}
-  \item{Generalized Mantel-Haenszel (Penfield, 2001)}
-  \item{Generalized logistic regression (Magis, Raiche, Beland and Gerard, 2011)}
+  \item{Likelihood-ratio test (Thissen, Steinberg and Wainer, 1988)}  
   \item{Common cumulative odds ratio (Liu and Agresti, 1996)}
   \item{Indices based on pairwise comparisons of ordinal items (Woods, 1996)}
   \item{Generalized Lord's chi-square test (Kim, Cohen and Park, 1995).}

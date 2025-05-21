@@ -4,7 +4,7 @@
 \title{Liu-Agresti Common Cumulative Odds Ratio}
 
 \description{
-Computes the Liu-Agresti estimate of the common cumulative odds ratio (\eqn{\Psi}) and its reciprocal (\eqn{\alpha}) for ordinal data from two independent groups. This statistic quantifies the direction and strength of ordinal association between groups, analogous to a Mantel-Haenszel odds ratio adapted for ordinal scales.
+Computes the Liu-Agresti estimate of the common cumulative odds ratio (\eqn{\Psi}) and its reciprocal (\eqn{\alpha}) for ordinal data from two independent groups. This statistic quantifies the direction and strength of ordinal association between groups.
 }
 
 \usage{
@@ -28,11 +28,12 @@ This function creates a 2 x J contingency table, where J is the number of distin
 
 The estimate \eqn{\hat{\Psi}} is based on cumulative frequencies and is designed for ordinal response categories. It quantifies the association between group membership and the likelihood of higher category responses.
 
-\strong{Important limitation:} if one of the response categories is completely absent from one group, then the cumulative margins used in the computation may contain zero values. In such cases, either the numerator or the denominator of the Liu-Agresti formula will be zero, making the estimate undefined. When this occurs, the function returns \code{NA} and issues a warning.
-
-It is recommended to check that all ordinal response categories are represented in both groups before using this function. Alternatively, smoothing procedures (e.g., adding pseudo-counts) may be implemented externally for sparse data, though this is not done by default to remain consistent with the original Liu-Agresti method.
-
 The function does not support missing values; observations with \code{NA} should be removed prior to use.
+
+If one of the response categories is completely absent from one group, then the cumulative margins used in the computation may contain zero values. In such cases, either the numerator or the denominator of the Liu-Agresti formula will be zero, making the estimate undefined. When this occurs, the function returns \code{NA} and issues a warning.
+
+About the notation: In the original article by Liu and Agresti (1996), the cumulative logistic model uses the parameters \eqn{\beta} and \eqn{\theta}. To avoid any confusion with a logistic model or the IRT framework, the symbol \eqn{\psi} is used here to denote the group effect. 
+
 }
 
 \references{

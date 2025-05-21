@@ -4,7 +4,7 @@
 \alias{print.difQuade}
 \title{Detection of Differential Item Functioning Using Quade-Type Association Indices for Polytomous (Ordinal) Item}
 \description{
-This function detects differential item functioning (DIF) in ordinal items using association indices based on pairwise comparisons, as proposed by Quade (1974) and extended in Woods (2009). It supports various ordinal measures of association to identify uniform DIF only.
+This function detects DIF in ordinal items using association indices based on pairwise comparisons, as proposed by Quade (1974) and extended in Woods (2009). It supports various ordinal measures of association to identify uniform DIF only.
 }
 \usage{
 difQuade(Data, group, focal.name = NULL, anchor = NULL,
@@ -49,7 +49,7 @@ An object of class \code{"difQuade"} with components:
 \references{
 Quade, D. (1974). Nonparametric tests for the comparison of two groups of multivariate observations. \emph{The Annals of Statistics}, 2(5), 949–960.
 
-Woods, C. M. (2009). Evaluation of MIMIC-model approaches for DIF testing with comparison to two-group analysis. \emph{Educational and Psychological Measurement}, 69(4), 548–576.
+Woods, C. M. (2009). Testing for differential item functioning with measures of partial association. \emph{Applied Psychological Measurement}, 33(7), 538–554.
 }
 \author{    
     Sebastien Beland \cr
@@ -69,6 +69,7 @@ group <- SCS$Gender
 res1 <- difQuade(Data, group, focal.name = 2, 
 type = "ta", purify = TRUE)
 print(res1)
+# Here is a function thta plot the results
 plot(res1)
 
 # Using Goodman & Kruskal's gamma with restscore matching
@@ -120,6 +121,7 @@ Data <- Out.Unif$data
 res5 <- difQuade(Data = Data[, 1:10], group = Data$group, 
 focal.name = "G1", type = "ta", purify = TRUE)
 print(res5)
+# Here is a function thta plot the results
 plot(res5)
 
 # Using Goodman & Kruskal's gamma with restscore matching

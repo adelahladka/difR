@@ -42,14 +42,29 @@ lassoDIF.ABWIC <- function(Data, group, type="AIC", N=NULL, lambda=NULL, ...){
   for (i in 2:J) mat.names <- c(mat.names, paste("Item", i, sep = ""))
   rownames(mat) <- mat.names
 
-  #return(list(DIFitems = RES, DIFpars = mat, crit.value = CRIT, crit.type = type, lambda = out$lambda, opt.lambda = l.opt))
   return(list(DIFitems = RES, DIFpars = mat, crit.value = CRIT, crit.type = type, lambda = out$lambda, opt.lambda = l.opt,
               glmnet.fit = out))
 }
 
 #######################################################
 
-plot_lasso_paths <- function(out, nr.lambda = 100, highlight = NULL, title = "Regularization Paths of DIF Effects") {
+#' Plot LASSO coefficient paths
+#'
+#' This function displays the coefficient trajectories for DIF items detected via LASSO regularization.
+#'
+#' @param out An object returned by \code{lassoDIF.ABWIC}.
+#' @param nr.lambda Number of lambda values to display (default is 100).
+#' @param highlight Items to highlight in the plot.
+#' @param title Title of the plot.
+#' @param ... Additional arguments passed to \code{plot()}.
+#'
+#' @return A plot showing coefficient paths.
+#' @export
+plot_lasso_paths <- function(lasso_object, main = "Coefficient Paths", xlab = "Log Lambda", ylab = "Coefficients", ...) {
+  ...
+}
+
+plot_lasso_paths <- function(out, nr.lambda = 100, highlight = NULL, title = "Regularization Paths of DIF Effects",...) {
   coef_list <- lassoDIF.coef(out, nr.lambda = nr.lambda)
   DIF_coefs <- coef_list$pars
   log_lambda <- log(coef_list$lambda)

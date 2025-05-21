@@ -12,7 +12,6 @@ lassoDIF.ABWIC(Data, group, type = "AIC", N = NULL, lambda = NULL, ...)
 }
 
 \arguments{\item{...}{Additional arguments passed to internal methods.}
-
   \item{Data}{A numeric data frame or matrix: either only the item responses or the item responses with a group membership column.}
   \item{group}{A numeric or character vector: either a vector of group membership or a column index/name indicating group membership in \code{Data}.}
   \item{type}{Character string indicating the criterion used to select the optimal \eqn{\lambda} value. Must be one of \code{"AIC"}, \code{"BIC"}, or \code{"WIC"}.}
@@ -32,7 +31,7 @@ A list with the following components:
 }
 
 \details{
-This function detects uniform differential item functioning (DIF) using a penalized logistic regression model based on a 2PL-like structure. The model includes item-by-group interaction terms that are subject to lasso penalization. The optimal \eqn{\lambda} value is selected based on either the AIC, BIC, or WIC criterion.
+This function detects uniform DIF using a penalized logistic regression model based on the 2PL model. The model includes item-by-group interaction terms that are subject to lasso penalization. The optimal \eqn{\lambda} value is selected based on either the AIC, BIC, or WIC criterion.
 
 For the selected \eqn{\lambda^*}, the function returns DIF parameters for all items, and flags items whose corresponding DIF parameters are non-zero.
 
@@ -99,8 +98,8 @@ lassoDIF.ABWIC(Dat, Member, type="BIC")
 # as the lasso penalty (lambda) increases
 
 aic.res <- lassoDIF.ABWIC(Dat, Member, type="AIC")
-bic.res <- lassoDIF.ABWIC(Dat, Member, type="BIC")
 plot_lasso_paths(aic.res$glmnet.fit)
+bic.res <- lassoDIF.ABWIC(Dat, Member, type="BIC")
 plot_lasso_paths(bic.res$glmnet.fit)
 
  }

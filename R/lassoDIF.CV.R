@@ -2,7 +2,7 @@ lassoDIF.CV <- function(Data, group, nfold = 5, lambda = NULL, ...){
   
   data <- LassoData(Data, group)
   
-  if (!is.data.frame(data)) data <- as.data.frame(data) #CFF: is this now necessary? I don't know, not tested yet
+  if (!is.data.frame(data)) data <- as.data.frame(data) 
   y <- factor(data$Y)
   J <- length(unique(data$ITEM))
   x <- model.matrix(data$Y~-1+factor(data$ITEM)+data$SCORE+factor(data$ITEM):factor(data$GROUP))

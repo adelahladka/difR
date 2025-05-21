@@ -248,7 +248,7 @@ difPolyLogistic <- function (Data, group, focal.name, anchor = NULL, member.type
 ###############################################
 
 #' @export
-plot.Logistic <- function(x, plot = "lrStat", item = 1, itemFit = "best", pch = 8,
+plot.Logistic.Poly <- function(x, plot = "lrStat", item = 1, itemFit = "best", pch = 8,
                           number = TRUE, col = "red", colIC = rep("black", 2),
                           ltyIC = c(1, 2), save.plot = FALSE,
                           save.options = c("plot", "default", "pdf"),
@@ -321,7 +321,7 @@ plot.Logistic <- function(x, plot = "lrStat", item = 1, itemFit = "best", pch = 
 ##############################################
 
 #' @export
-print.Logistic<-function (x, ...) 
+print.Logistic.Poly<-function (x, ...) 
 {
     res <- x
     cat("\n")

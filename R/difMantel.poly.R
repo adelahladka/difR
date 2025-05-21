@@ -1,5 +1,5 @@
 
-Mantel.poly <- function(data, group, focal.name, ref.name,
+difMantel.poly <- function(data, group, focal.name, ref.name,
                         match = "score", sig.level = 0.05,
                         purify = FALSE, max.iter = 10) {
 
