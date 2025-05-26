@@ -1,5 +1,7 @@
 #' @importFrom VGAM vglm propodds
-
+#' @importFrom DescTools PseudoR2
+#' @importFrom stats coef vcov deviance
+#' @export
 LogistikPoly <- function(data, member, member.type = "group", match = "score",
                          anchor = 1:ncol(data), type = "both", criterion = "LRT",
                          all.cov = FALSE) {
@@ -20,20 +22,29 @@ LogistikPoly <- function(data, member, member.type = "group", match = "score",
       data2 <- data[, anchor, drop = FALSE]
       if (!(item %in% anchor)) data2 <- cbind(data2, data[, item])
       SCORES <- rowSums(data2, na.rm = TRUE)
+
     } else if (match[1] == "restscore") {
       data2 <- data
-      SCORES <- rowSums(data[, setdiff(anchor, item), drop = FALSE], na.rm = TRUE)
+      items_for_score <- setdiff(anchor, item)
+      if (length(items_for_score) == 0) {
+        SCORES <- rep(0, nrow(data))  # Aucun autre item
+      } else {
+        SCORES <- rowSums(data[, items_for_score, drop = FALSE], na.rm = TRUE)
+      }
+
     } else {
       SCORES <- match
       data2 <- data
     }
 
     ITEM <- data[, item]
+
     m0 <- switch(type,
       both  = vglm(ITEM ~ SCORES * GROUP, family = propodds, data = data2, model = TRUE),
       udif  = vglm(ITEM ~ SCORES + GROUP, family = propodds, data = data2, model = TRUE),
       nudif = vglm(ITEM ~ SCORES * GROUP, family = propodds, data = data2, model = TRUE)
     )
+
     m1 <- switch(type,
       both  = vglm(ITEM ~ SCORES, family = propodds, data = data2, model = TRUE),
       udif  = vglm(ITEM ~ SCORES, family = propodds, data = data2, model = TRUE),
@@ -42,9 +53,10 @@ LogistikPoly <- function(data, member, member.type = "group", match = "score",
 
     if (criterion == "LRT") {
       dev[item] <- VGAM::deviance(m1) - VGAM::deviance(m0)
+
     } else if (criterion == "Wald") {
-      coef_m0 <- coef(m0)
-      vcov_m0 <- vcov(m0)
+      coef_m0 <- stats::coef(m0)
+      vcov_m0 <- stats::vcov(m0)
       idx <- switch(type,
         udif  = length(coef_m0),
         nudif = length(coef_m0),
@@ -53,6 +65,7 @@ LogistikPoly <- function(data, member, member.type = "group", match = "score",
       C <- diag(length(coef_m0))[idx, , drop = FALSE]
       W <- t(C %*% coef_m0) %*% solve(C %*% vcov_m0 %*% t(C)) %*% (C %*% coef_m0)
       dev[item] <- as.numeric(W)
+
     } else {
       stop("'criterion' must be either 'LRT' or 'Wald'")
     }
@@ -61,14 +74,14 @@ LogistikPoly <- function(data, member, member.type = "group", match = "score",
     R2simple[item] <- PseudoR2(m1, which = "McKelveyZavoina")
     deltaR[item] <- R2full[item] - R2simple[item]
 
-    mFull[item, 1:length(coef(m0))] <- coef(m0)
-    mSimple[item, 1:length(coef(m1))] <- coef(m1)
-    seFull[item, 1:length(coef(m0))] <- sqrt(diag(vcov(m0)))
-    seSimple[item, 1:length(coef(m1))] <- sqrt(diag(vcov(m1)))
+    mFull[item, 1:length(stats::coef(m0))] <- stats::coef(m0)
+    mSimple[item, 1:length(stats::coef(m1))] <- stats::coef(m1)
+    seFull[item, 1:length(stats::coef(m0))] <- sqrt(diag(stats::vcov(m0)))
+    seSimple[item, 1:length(stats::coef(m1))] <- sqrt(diag(stats::vcov(m1)))
 
     if (all.cov) {
-      cov.matM0[[item]] <- vcov(m0)
-      cov.matM1[[item]] <- vcov(m1)
+      cov.matM0[[item]] <- stats::vcov(m0)
+      cov.matM1[[item]] <- stats::vcov(m1)
     }
   }
 
@@ -92,14 +105,12 @@ LogistikPoly <- function(data, member, member.type = "group", match = "score",
   )
 }
 
-#LogistikPoly(data=Out.Unif$data[,1:10], member=Out.Unif$data[,11])  
-#LogistikPoly(data=Out.Unif$data[,1:10], member=Out.Unif$data[,11], criterion = "Wald")  
-#LogistikPoly(data=Out.Unif$data[,1:10], member=Out.Unif$data[,11], type = "nudif")
-#LogistikPoly(data=Out.Unif$data[,1:10], member=Out.Unif$data[,11], type = "udif")
 
 ##########################################################################
 
-
+#' @importFrom stats qchisq pchisq p.adjust
+#' @importFrom utils capture.output
+#' @export
 difPolyLogistic <- function (Data, group, focal.name, anchor = NULL, member.type = "group",    
     match = "score", type = "both", criterion = "LRT", alpha = 0.05, all.cov=FALSE,
     purify = FALSE, nrIter = 10, p.adjust.method = NULL, save.output = FALSE, 
@@ -308,7 +319,7 @@ plot.Logistic.Poly <- function(x, plot = "lrStat", item = 1, itemFit = "best", p
       if (plotype == 1) {
         pdf(file = fileName); internalLog(); dev.off()
       } else {
-        jpeg(file = fileName); internalLog(); dev.off()
+        jpeg(filename = fileName); internalLog(); dev.off()
       }
       cat("Plot saved to '", fileName, "'
 ")

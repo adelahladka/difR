@@ -1,3 +1,6 @@
+#' @importFrom stats deviance coef
+#' @importFrom glmnet deviance coef
+#' @export
 lassoDIF.ABWIC <- function(Data, group, type="AIC", N=NULL, lambda=NULL, ...){
   
   data <- LassoData(Data, group)
@@ -48,22 +51,18 @@ lassoDIF.ABWIC <- function(Data, group, type="AIC", N=NULL, lambda=NULL, ...){
 
 #######################################################
 
-#' Plot LASSO coefficient paths
+#' Plot coefficient paths from LASSO DIF
 #'
-#' This function displays the coefficient trajectories for DIF items detected via LASSO regularization.
+#' This function displays coefficient trajectories from LASSO-regularized DIF detection.
 #'
-#' @param out An object returned by \code{lassoDIF.ABWIC}.
-#' @param nr.lambda Number of lambda values to display (default is 100).
-#' @param highlight Items to highlight in the plot.
-#' @param title Title of the plot.
-#' @param ... Additional arguments passed to \code{plot()}.
+#' @param out A fitted object returned by \code{lassoDIF()}.
+#' @param nr.lambda Number of lambda values to evaluate and display (default is 100).
+#' @param highlight Optional: indices of items to highlight in color.
+#' @param title Main title of the plot.
+#' @param ... Additional graphical parameters passed to \code{plot()}.
 #'
-#' @return A plot showing coefficient paths.
+#' @return A base R plot of coefficient paths.
 #' @export
-plot_lasso_paths <- function(lasso_object, main = "Coefficient Paths", xlab = "Log Lambda", ylab = "Coefficients", ...) {
-  ...
-}
-
 plot_lasso_paths <- function(out, nr.lambda = 100, highlight = NULL, title = "Regularization Paths of DIF Effects",...) {
   coef_list <- lassoDIF.coef(out, nr.lambda = nr.lambda)
   DIF_coefs <- coef_list$pars
@@ -76,9 +75,4 @@ plot_lasso_paths <- function(out, nr.lambda = 100, highlight = NULL, title = "Re
           main = title,
           col = if (is.null(highlight)) 1:nrow(DIF_coefs) else ifelse(1:nrow(DIF_coefs) %in% highlight, 2, "grey"))
   legend("topright", legend = item_names, col = 1:nrow(DIF_coefs), lty = 1, cex = 0.6)
-}
-
-#' @export
-plot.lassoDIF <- function(x, ...) {
-  plot_lasso_paths(x, ...)
 }

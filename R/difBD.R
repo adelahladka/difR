@@ -1,3 +1,4 @@
+#' @export
 difBD<-function (Data, group, focal.name, anchor = NULL, match="score", BDstat = "BD", 
     alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method =NULL,
     save.output = FALSE, 

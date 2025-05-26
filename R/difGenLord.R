@@ -1,3 +1,4 @@
+#' @export
 difGenLord<-function (Data, group, focal.names, model, c = NULL, engine = "ltm", 
     discr = 1, irtParam = NULL, nrFocal = 2, same.scale = TRUE, 
     anchor = NULL, alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL,

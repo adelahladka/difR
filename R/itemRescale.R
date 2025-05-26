@@ -2,6 +2,7 @@
 # mR: reference group, mF: focal group
 # Item parameters rescaled to reference group metric
 
+#' @export
 itemRescale<-function(mR,mF,items=1:nrow(mR)){
 if (ncol(mR)==2) {
 res<-cbind(mF[,1]+mean(mR[items,1])-mean(mF[items,1]),mF[,2])

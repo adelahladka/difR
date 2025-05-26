@@ -1,5 +1,4 @@
-# DIF MANTEL-HAENZEL
-
+#' @export
 difMH<-function (Data, group, focal.name, anchor=NULL, match="score", MHstat = "MHChisq", correct = TRUE, exact=FALSE,
     alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method=NULL, save.output = FALSE, 
     output = c("out", "default")) 
@@ -262,7 +261,6 @@ else RES$DIFitems<-which(RES$adjusted.p<alpha)
 
 
 
-# METHODS
 #' @export
 plot.MH<-function (x, pch = 8, number = TRUE, col = "red", save.plot=FALSE,save.options=c("plot","default","pdf"),...) 
 {
@@ -325,7 +323,7 @@ else cat("The plot was not captured!","\n",sep="")
 }
 
 
-### 
+
 #' @export
 print.MH<-function (x, ...) 
 {

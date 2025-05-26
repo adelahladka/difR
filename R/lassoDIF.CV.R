@@ -1,3 +1,6 @@
+#' @importFrom stats coef deviance
+#' @importFrom glmnet cv.glmnet coef deviance
+#' @export
 lassoDIF.CV <- function(Data, group, nfold = 5, lambda = NULL, ...){
   
   data <- LassoData(Data, group)

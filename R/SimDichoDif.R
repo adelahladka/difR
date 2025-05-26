@@ -1,3 +1,4 @@
+#' @export
 SimDichoDif <- function(It, ItDIFa, ItDIFb, NR, NF,
                         a = rep(1, It), b,
                         Ga = rep(0, length(ItDIFa)), Gb = rep(0, length(ItDIFb)),

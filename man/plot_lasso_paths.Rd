@@ -2,7 +2,7 @@
 % Please edit documentation in R/lassoDIF.ABWIC.R
 \name{plot_lasso_paths}
 \alias{plot_lasso_paths}
-\title{Plot LASSO coefficient paths}
+\title{Plot coefficient paths from LASSO DIF}
 \usage{
 plot_lasso_paths(
   out,
@@ -13,19 +13,19 @@ plot_lasso_paths(
 )
 }
 \arguments{
-\item{out}{An object returned by \code{lassoDIF.ABWIC}.}
+\item{out}{A fitted object returned by \code{lassoDIF()}.}
 
-\item{nr.lambda}{Number of lambda values to display (default is 100).}
+\item{nr.lambda}{Number of lambda values to evaluate and display (default is 100).}
 
-\item{highlight}{Items to highlight in the plot.}
+\item{highlight}{Optional: indices of items to highlight in color.}
 
-\item{title}{Title of the plot.}
+\item{title}{Main title of the plot.}
 
-\item{...}{Additional arguments passed to \code{plot()}.}
+\item{...}{Additional graphical parameters passed to \code{plot()}.}
 }
 \value{
-A plot showing coefficient paths.
+A base R plot of coefficient paths.
 }
 \description{
-This function displays the coefficient trajectories for DIF items detected via LASSO regularization.
+This function displays coefficient trajectories from LASSO-regularized DIF detection.
 }

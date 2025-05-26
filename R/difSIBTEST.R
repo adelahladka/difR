@@ -1,3 +1,4 @@
+#' @export
 difSIBTEST<-function (Data, group, focal.name, type = "udif", anchor = NULL, 
     alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL, 
     save.output = FALSE, output = c("out", "default")) 

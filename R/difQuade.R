@@ -1,3 +1,4 @@
+#' @export
 difQuade <- function(Data, group, focal.name = NULL, anchor = NULL, 
                      match = "score", type = c("ta", "e", "dxy", "dyx", "gamma"), 
                      alpha = 0.05, purify = FALSE, nrIter = 10, 

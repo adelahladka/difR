@@ -1,4 +1,4 @@
-# RAJU'S AREA
+#' @export
 RajuZ<-function(mR,mF,signed=FALSE){
 res<-NULL
 mod<-as.character(ncol(mR))

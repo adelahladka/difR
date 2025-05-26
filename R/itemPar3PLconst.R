@@ -1,5 +1,5 @@
-library(ltm)
-
+#' @importFrom ltm vcov tpm
+#' @export
 itemPar3PLconst<-function(data,c=rep(0,ncol(data))){
 J<-ncol(data)
 if (length(c)==1) Guess<-rep(c,ncol(data))

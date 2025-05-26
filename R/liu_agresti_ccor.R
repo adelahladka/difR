@@ -1,63 +1,58 @@
 #' @export
-
-liu_agresti_ccor <- function(ordinal_values, groups) {
-  create_2xJ_table <- function(ordinal_values, groups, group_names) {
-    if (length(ordinal_values) != length(groups)) stop("Vectors must have the same length.")
-
-    unique_values <- sort(unique(ordinal_values))
-    J <- length(unique_values)
-
-    table <- matrix(0, nrow = 2, ncol = J)
-    colnames(table) <- unique_values
-    rownames(table) <- group_names
-
-    for (i in seq_along(ordinal_values)) {
-      value <- ordinal_values[i]
-      group <- groups[i]
-      column <- which(unique_values == value)
-
-      if (group == group_names[1]) {
-        table[1, column] <- table[1, column] + 1
-      } else if (group == group_names[2]) {
-        table[2, column] <- table[2, column] + 1
-      } else {
-        stop(paste("Group must be one of:", paste(group_names, collapse = ", ")))
-      }
-    }
-
-    Ar <- cumsum(table[1, ])
-    Cf <- cumsum(table[2, ])
-    Br <- Ar - sum(table[1, ])
-    Df <- Cf - sum(table[2, ])
-    N <- sum(table)
-
-    numerator <- sum(Ar * Df / N)
-    denominator <- sum(Br * Cf / N)
-
-    if (denominator == 0 || numerator == 0) {
-      warning("liu_agresti_ccor: Numerator or denominator is zero - estimation not possible.")
-      return(c(NA, NA, NA))
-    }
-
-    psi_hat <- numerator / denominator
-    log_psi_hat <- log(psi_hat)
-
-    # Var eq. 3
-    term1 <- sum((Ar * Df / N)^2) / (numerator^2)
-    term2 <- sum((Br * Cf / N)^2) / (denominator^2)
-    var_log_psi <- term1 + term2
-    se_log_psi <- sqrt(var_log_psi)
-
-    return(c(psi_hat, 1 / psi_hat, se_log_psi))
+liu_agresti_ccor <- function(responses, group) {
+  # Sécurisation des longueurs
+  if (length(responses) != length(group)) {
+    stop("'responses' and 'group' must have the same length.")
   }
 
-  group_names <- sort(unique(groups))
-  if (length(group_names) != 2) stop("Exactly two groups required.")
+  # Forcer les types attendus
+  responses <- as.integer(responses)
+  group <- as.character(group)
 
-  res <- create_2xJ_table(ordinal_values, groups, group_names)
-  result <- matrix(round(res, 4), nrow = 1, byrow = TRUE)
-  colnames(result) <- c("Psi_hat", "Alpha_hat", "SE_log_Psi")
-  rownames(result) <- "Result"
-  return(result)
+  # Vérifier le nombre de groupes
+  groups <- sort(unique(group))
+  if (length(groups) != 2) stop("There must be exactly two groups (reference and focal).")
+  g1 <- groups[1]
+  g2 <- groups[2]
+
+  # Créer la table 2 × c
+  tab <- table(group, responses)
+  tab <- as.matrix(tab)
+  tab <- tab[c(g1, g2), , drop = FALSE]
+
+  c <- ncol(tab)
+  log_Psi_vec <- numeric(0)
+  SE_log_Psi_vec <- numeric(0)
+
+  for (j in 1:(c - 1)) {
+    a <- sum(tab[1, 1:j])
+    b <- sum(tab[1, (j + 1):c])
+    c_ <- sum(tab[2, 1:j])
+    d <- sum(tab[2, (j + 1):c])
+
+    if (all(c(a, b, c_, d) > 0)) {
+      log_Psi <- log((a * d) / (b * c_))
+      SE_log <- sqrt(1 / a + 1 / b + 1 / c_ + 1 / d)
+
+      log_Psi_vec <- c(log_Psi_vec, log_Psi)
+      SE_log_Psi_vec <- c(SE_log_Psi_vec, SE_log)
+    }
+  }
+
+  if (length(log_Psi_vec) == 0) {
+    return(c(Psi_hat = NA, Alpha_hat = NA, SE_log_Psi = NA))
+  }
+
+  # Moyenne pondérée inverse-variance
+  weights <- 1 / (SE_log_Psi_vec^2)
+  log_Psi_avg <- sum(weights * log_Psi_vec) / sum(weights)
+  SE_log_Psi <- sqrt(1 / sum(weights))
+  alpha <- log_Psi_avg / log(1 + sqrt(3) / pi)
+
+  return(c(
+    Psi_hat = round(exp(log_Psi_avg), 4),
+    Alpha_hat = round(alpha, 4),
+    SE_log_Psi = round(SE_log_Psi, 4)
+  ))
 }
 

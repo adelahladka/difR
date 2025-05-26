@@ -1,7 +1,5 @@
-#GENERAL MANTEL-HAENSZEL
-## data: data matrix
-# member: vector of integer values, 0 for reference group, 1, 2, etc. for focal groups
 
+#' @export
 genMantelHaenszel<-function(data,member,match="score",anchor=1:ncol(data)){
 res<-NULL
 for (item in 1:ncol(data)){

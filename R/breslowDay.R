@@ -1,6 +1,6 @@
 #' @importFrom grDevices dev.off jpeg pdf
 #' @importFrom graphics abline legend lines points text
-#' @importFrom stats binomial coefficients cor deviance glm glmer glmnet
+#' @importFrom stats binomial coefficients cor deviance glm
 #' @importFrom stats model.matrix na.omit p.adjust pchisq pnorm
 #' @importFrom stats qchisq qnorm rnorm sd symnum vcov
 #' @importFrom stats mantelhaen.test
@@ -9,8 +9,7 @@
 #' @importFrom glmnet glmnet cv.glmnet
 NULL
 
-
-# BRESLOW-DAY
+#' @export
 breslowDay<-function(data,member,match="score",anchor=1:ncol(data),BDstat="BD")
 {
       res<-NULL

@@ -49,21 +49,25 @@ Returns an object of class \code{"Logistic"}, a list with elements:
 }
 
 \details{
-The function fits cumulative ordinal logistic regression models (via \code{VGAM::vglm}) to detect DIF in polytomous items. Three nested models are fit per item:
+The function fits cumulative ordinal logistic regression models (via \code{VGAM::vglm}) to detect DIF in polytomous items.
+
+Three nested models are fit per item and compared to assess DIF:
 \itemize{
-\item \eqn{M\_0}: No DIF (only match effect)
-\item \eqn{M\_1}: Uniform DIF (match + group)
-\item \eqn{M\_2}: Uniform + non-uniform DIF (match + group + interaction)
+  \item \eqn{M_0}: No DIF (only match effect)
+  \item \eqn{M_1}: Uniform DIF (match + group)
+  \item \eqn{M_2}: Uniform + non-uniform DIF (match + group + interaction)
 }
-Models are compared using either likelihood-ratio or Wald tests.
+\eqn{M_0}, \eqn{M_1}, and \eqn{M_2} are compared using either likelihood-ratio or Wald tests, depending on the \code{criterion} argument.
 
 When \code{match = "restscore"}, the matching variable is defined as the sum score excluding the item being tested.
 
 When \code{purify = TRUE}, the algorithm iteratively refines the anchor set by excluding detected DIF items and updating scores.
 
-This function handles group-based DIF (\code{member.type = "group"}) as well as DIF based on continuous moderators (\code{member.type = "cont"}).
+This function handles both group-based DIF (\code{member.type = "group"}) and DIF based on continuous moderators (\code{member.type = "cont"}).
 
 For each item, the DIF analysis is performed using only complete cases. Respondents with missing data on the item being tested, the matching variable, or the group variable are excluded from the estimation for that item.
+
+For very strong predictors (e.g., matching variables that nearly perfectly separate response categories), the underlying ordinal regression models may become numerically unstable. This can result in extreme coefficients, saturation warnings, and possibly negative pseudo-R² values. These cases reflect data properties rather than programming errors.
 }
 
 \references{

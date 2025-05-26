@@ -1,4 +1,5 @@
-# DIF: STANDARDIZATION
+
+#' @export
 stdPDIF<-function (data, member, match="score", anchor = 1:ncol(data), stdWeight="focal") 
 {
     resPDIF <- resAlpha<-NULL

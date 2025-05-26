@@ -1,4 +1,5 @@
-
+#' @importFrom stats mantelhaen.test
+#' @export
 mantelHaenszel <- function (data, member, match = "score", correct = TRUE, exact = FALSE, anchor = 1:ncol(data)) {
   res <- resAlpha <- varLambda <- RES <- NULL
 

@@ -1,3 +1,4 @@
+#' @export
 contrastMatrix<-function(nrFocal,model){
 np<-switch(model,"1PL"=1,"2PL"=2,"3PL"=3,"3PLc"=2)
 C<-matrix(0,nrFocal*np,(nrFocal+1)*np)

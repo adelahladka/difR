@@ -1,14 +1,13 @@
 ################################################################################
 ## GPCM traceline
 
-# Define GPCM function
-
 # theta - vector or single theta value
 # a - slope parameter
 # b - overall difficulty parameter
 # d - K x 1 vector of step parameters (these ought to sum to 0; usually first is 0)
 # where K is the total number of categories
 # D - scaling constant
+
 crf.gpcm<-function(theta, a, b, d, D=1){
   ncat<-length(d)
   P<-matrix(0,length(theta),ncat)
@@ -22,11 +21,6 @@ crf.gpcm<-function(theta, a, b, d, D=1){
     P[,i]<-z
   }
   
-  ## doing some transformations to try to get more numerical stability
-  #maxima<-rowMaxs(P)
-  #P<- P - (maxima + log(rowSums(exp(P-maxima))))
-  #P<-exp(P)
-  
   P<-exp(P)/rowSums(exp(P))
   P
 }
@@ -35,7 +29,8 @@ crf.gpcm<-function(theta, a, b, d, D=1){
 ################################################################################
 ## Data generation
 
-# assumes thetas and item parameters are supplied
+# Assumes thetas and item parameters are supplied
+
 gen.gpcm <- function(th, a.vec, b.vec, d.list, D=1){
   
   ni <- length(a.vec) # number of items
@@ -54,8 +49,8 @@ gen.gpcm <- function(th, a.vec, b.vec, d.list, D=1){
 
 ################################################################################
 ## Wrapper for multiple group data generation and DIF generation.
-## Out of the functions in this file, at least this one should be exported
 
+#' @export
 SimPolyDif <- function(It, ItDIFa, ItDIFb,
                        NR, NF, a, b, d, ncat=3,
                        Ga=rep(0,ItDIFa), Gb=rep(0,ItDIFb),

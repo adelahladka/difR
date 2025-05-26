@@ -1,3 +1,4 @@
+#' @export
 genLogistik<-function (data, member, match="score",anchor = 1:ncol(data), type = "both", 
     criterion = "LRT") 
 {

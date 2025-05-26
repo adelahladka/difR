@@ -1,3 +1,5 @@
+#' @importFrom stats coef
+#' @importFrom glmnet coef
 lassoDIF.coef <- function(out, nr.lambda){
   J <- (nrow(out$beta)-1)/2
   nr1 <- nrow(coef(out, s = 0))-J+1

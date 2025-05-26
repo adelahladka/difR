@@ -2,7 +2,7 @@ Package: difR
 Type: Package
 Title: Collection of Methods to Detect Dichotomous and Polytomous Differential Item Functioning (DIF)
 Version: 6.0.0
-Date: 2025-05-11
+Date: 2025-05-24
 Authors@R: c(person("David", "Magis", role = c("aut"), comment = "IQVIA Belux"), person("Sebastien", "Beland", email = "sebastien.beland@umontreal.ca", role = c("aut", "cre"), comment = "Universite de Montreal"), person("Carl F.", "Falk", role = "aut", comment = "McGill University"), person("Gilles", "Raiche", role = "aut", comment = "UQAM"))
 Maintainer: Sebastien Beland <sebastien.beland@umontreal.ca>
 Depends: R (>= 3.0.0)
@@ -14,7 +14,15 @@ Imports:
     DescTools,
     VGAM,
     glmnet
-Description: The difR package contains several methods to detect DIF in dichotomous and polytomous scored items. Both uniform and non-uniform DIF effects can be detected, using approaches that either rely on item response theory models or not. Some methods can handle more than one focal group. See Magis, Beland, Tuerlinckx, and De Boeck (2010, Behavior Research Methods, 42, 847–862, <doi:10.3758/BRM.42.3.847>) for a general overview.
+Description: Methods to detect differential item functioning (DIF) in dichotomous
+    and polytomous items, using both classical and modern approaches. These include
+    Mantel-Haenszel procedures, logistic regression (including ordinal models), and
+    regularization-based methods such as LASSO. Uniform and non-uniform DIF effects
+    can be detected, and some methods support multiple focal groups. The package
+    also provides tools for anchor purification, rest score matching, effect size
+    estimation, and DIF simulation. See Magis, Beland, Tuerlinckx, and De Boeck
+    (2010, Behavior Research Methods, 42, 847–862, <doi:10.3758/BRM.42.3.847>) for
+    a general overview.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true

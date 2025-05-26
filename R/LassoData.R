@@ -1,3 +1,4 @@
+#' @export
 LassoData <- function(Data, group){
 
   if (length(group) == 1) {
@@ -19,11 +20,9 @@ LassoData <- function(Data, group){
     DichoData <- Data
   }
   
-
   SCO   <- as.matrix(rowSums(DichoData,na.rm=TRUE))             # Total score
   SCORE <- as.matrix(rep(SCO, length(DichoData[1,])))
-  GROUP <- as.matrix(rep(GROUP, length(DichoData[1,])))         # Group membership
-  #Ans   <-  cbind(row = rownames(DichoData), stack(DichoData))  
+  GROUP <- as.matrix(rep(GROUP, length(DichoData[1,])))         # Group membership  
   Ans   <-  cbind(row = rownames(as.data.frame(DichoData)), stack(as.data.frame(DichoData))) # Answers of all the items
   
   Y<-cbind(SCORE,GROUP,Ans)                                     # Merge all 5 columns

@@ -1,3 +1,4 @@
+#' @export
 difStd <-function(Data,group,focal.name,anchor=NULL,match="score",
 stdWeight="focal",thrSTD=0.1,purify=FALSE,nrIter=10,
 save.output=FALSE, output=c("out","default")) 

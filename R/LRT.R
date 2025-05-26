@@ -1,9 +1,5 @@
-# require library lme4
-
-library(lme4)
-
-# DIF: LIKELIHOOD-RATIO TEST
-
+#' @importFrom lme4 glmer deviance
+#' @export
 LRT<-function(data,member){
 N<-nrow(data)
 C<-ncol(data)

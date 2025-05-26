@@ -1,3 +1,4 @@
+#' @export
 genLordChi2<-function(irtParam,nrFocal){
 nrItems<-nrow(irtParam)/(nrFocal+1)
 mat<-vector("list",nrFocal+1)

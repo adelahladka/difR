@@ -1,3 +1,4 @@
+#' @export
 difLRT<-function (Data, group, focal.name, alpha = 0.05, purify = FALSE, 
     nrIter = 10, p.adjust.method=NULL,save.output = FALSE, output = c("out", "default")) 
 {

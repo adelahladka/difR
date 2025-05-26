@@ -181,7 +181,7 @@ Magis, D. and Facon, B. (2014). \emph{deltaPlotR}: An R Package for Differential
 
 
 \seealso{
- \code{\link[deltaPlotR]{deltaPlot}}, code{\link[deltaPlotR]{diagPlot}}, \code{\link{dichoDif}}
+ \code{\link[deltaPlotR]{deltaPlot}}, \code{\link[deltaPlotR]{diagPlot}}, \code{\link{dichoDif}}
  }
 
 \examples{

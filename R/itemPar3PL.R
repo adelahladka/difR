@@ -1,11 +1,5 @@
-## ESTIMATION OF ITEM RESPONSE MODEL
-
-# require ltm library
-
-library(ltm)
-
-# Items parameters
-
+#' @importFrom ltm vcov tpm
+#' @export
 itemPar3PL<-function(data){
 J<-ncol(data)
 mod<-tpm(data,IRT.param=FALSE)

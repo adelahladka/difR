@@ -1,6 +1,6 @@
-library(ltm)
-library(lme4)
-
+#' @importFrom lme4 glmer
+#' @importFrom ltm rasch
+#' @export
 itemPar1PL<-function (data, engine = "ltm", discr = 1) 
 {
     if (engine != "ltm" & engine != "lme4") 
@@ -27,8 +27,7 @@ else mod <- rasch(data)
             items <- rep(1, N)
             for (i in 2:C) items <- c(items, rep(i, N))
             items <- as.factor(items)
-            mod <- glmer(y ~ items + (1 | pp) - 1, family = binomial, 
-                REML = FALSE)
+            mod <- glmer(y ~ items + (1 | pp) - 1, family = binomial)   # Remove REML = FALSE (5/22/2025)
             par <- summary(mod)@coefs[, 1:2]
             par[, 1] <- -par[, 1]
         }

@@ -1,4 +1,4 @@
-
+#' @importFrom glmnet glmnet
 lassoDIF <- function(Data, lambda = NULL, ...) {
   if (!is.data.frame(Data)) Data <- as.data.frame(Data)
   y <- factor(Data$Y)

@@ -1,5 +1,5 @@
-library(ltm)
-
+#' @importFrom ltm vcov ltm
+#' @export
 itemPar2PL<-function(data){
 J<-ncol(data)
 mod<-ltm(data~z1,IRT.param=FALSE)

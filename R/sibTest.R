@@ -1,3 +1,5 @@
+#' @importFrom mirt SIBTEST
+#' @export
 sibTest<-function (data, member, anchor = 1:ncol(data), type = "udif") 
 {
     res <- matrix(NA, ncol(data), 5)

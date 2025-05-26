@@ -37,7 +37,7 @@ itemPar1PL(data, engine = "ltm", discr = 1)
 
  With the \code{"ltm"} engine, the common discrimination parameter is set equal to 1 by default. It is possible to fix another value through the argument\code{discr}.
  Alternatively, this common discrimination parameter can be estimated (though not returned) by fixing \code{discr} to \code{NULL}. See the functionalities of 
- \code{\link{rasch}} command for further details.
+ \code{\link[ltm:rasch]{rasch}} command for further details.
  }
 
 \references{ 

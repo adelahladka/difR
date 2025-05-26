@@ -1,8 +1,7 @@
 # DIF TRANSFORMED ITEM DIFFICULTIES (ANGOFF's DELTA METHOD)
 
-require(deltaPlotR)
-
-
+#' @importFrom deltaPlotR deltaPlot diagPlot
+#' @export
 difTID<-function (Data, group, focal.name, thrTID = 1.5, 
 purify = FALSE, purType = "IPP1", nrIter = 10, alpha = 0.05,
 extreme = "constraint", const.range = c(0.001, 0.999), nrAdd = 1,

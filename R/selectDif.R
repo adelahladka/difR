@@ -1,3 +1,4 @@
+#' @export
 selectDif<-function (Data, group, focal.name, method, anchor = NULL, props = NULL, 
     thrTID = 1.5, alpha = 0.05, MHstat = "MHChisq", correct = TRUE, 
     exact = FALSE, stdWeight = "focal", thrSTD = 0.1, BDstat = "BD", 

@@ -1,5 +1,8 @@
+#' @importFrom stats solve pchisq qchisq
+#' @importFrom graphics symnum
+#' @export
 subtestLogistic<-function(x,items,groups,alpha=0.05){
-if (class(x)!="genLogistic") stop("'x' must be an output of the 'genLogistic' function",call.=FALSE)
+if (!inherits(x, "genLogistic")) stop("'x' must be an output of the 'genLogistic' function",call.=FALSE)
 if (length(groups)<=1) stop("at least two groups must be specified in 'groups'",call.=FALSE)
 if (length(groups)>length(x$focal.names)+1) stop("there are more groups specified than possible",call.=FALSE)
 nGroup<-length(x$focal.names)

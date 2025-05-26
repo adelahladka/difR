@@ -1,4 +1,4 @@
-
+#' @export
 difMantel.poly <- function(data, group, focal.name, ref.name,
                         match = "score", sig.level = 0.05,
                         purify = FALSE, max.iter = 10) {
@@ -125,8 +125,6 @@ difMantel.poly <- function(data, group, focal.name, ref.name,
     }
   }
 }
-
-##########################################################
 
 #' @export
 plot.MHPoly <- function(x, alpha = 0.05, cex = 0.8, col = "black", save.plot = FALSE, save.options = c("plot", getwd(), "pdf"), ...) {

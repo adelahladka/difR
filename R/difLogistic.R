@@ -1,5 +1,5 @@
 # LOGISTIC REGRESSION
-
+#' @export
 difLogistic<-function (Data, group, focal.name, anchor = NULL, member.type = "group", 
     match = "score", type = "both", criterion = "LRT", alpha = 0.05, all.cov=FALSE,
     purify = FALSE, nrIter = 10, p.adjust.method = NULL, save.output = FALSE, 

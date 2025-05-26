@@ -8,12 +8,12 @@ Computes the Liu-Agresti estimate of the common cumulative odds ratio (\eqn{\Psi
 }
 
 \usage{
-liu_agresti_ccor(ordinal_values, groups)
+liu_agresti_ccor(responses, group)
 }
 
 \arguments{
-  \item{ordinal_values}{A numeric vector of ordinal item responses. Categories must be coded as integers (e.g., 1 to 5 for a Likert-type scale).}
-  \item{groups}{A grouping vector indicating the group to which each observation belongs. It must contain exactly two unique values (e.g., "ref" and "foc").}
+  \item{responses}{A numeric vector of ordinal item responses. Categories must be coded as integers (e.g., 1 to 5 for a Likert-type scale).}
+  \item{group}{A grouping vector indicating the group to which each observation belongs. It must contain exactly two unique values (e.g., "ref" and "foc").}
 }
 
 \value{
@@ -50,8 +50,13 @@ Universite de Montreal (Canada) \cr
 \examples{
 # Simulated balanced example
 set.seed(123)
-ordinal_values <- sample(1:4, 200, replace = TRUE)
-groups <- rep(c("ref", "foc"), each = 100)
 
-liu_agresti_ccor(ordinal_values, groups)
+group <- rep(c("ref", "foc"), each = 100)  
+stopifnot(length(group) == 200)
+
+responses <- sample(1:4, size = length(group), replace = TRUE)
+stopifnot(length(responses) == length(group))  
+
+liu_agresti_ccor(as.integer(responses), factor(group))
 }
+

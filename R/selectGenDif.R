@@ -1,3 +1,4 @@
+#' @export
 selectGenDif<-function (Data, group, focal.names, method, anchor = NULL, match = "score", 
     type = "both", criterion = "LRT", alpha = 0.05, model = "2PL", 
     c = NULL, engine = "ltm", discr = 1, irtParam = NULL, nrFocal = 2, 

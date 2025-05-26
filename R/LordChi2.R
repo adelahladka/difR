@@ -1,5 +1,4 @@
-# DIF: LORD'S CHI-SQUARED STATISTIC        
-
+#' @export      
 LordChi2<-function(mR,mF){
 res<-NULL
 mod<-as.character(ncol(mR))

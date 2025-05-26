@@ -1,3 +1,4 @@
+#' @export
 difLogReg<-function (Data, group, focal.name, anchor = NULL, group.type = "group", 
     match = "score", type = "both", criterion = "LRT", alpha = 0.05, 
     purify = FALSE, nrIter = 10, p.adjust.method=NULL,save.output = FALSE, output = c("out", 

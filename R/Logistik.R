@@ -1,4 +1,5 @@
-
+#' @importFrom stats glm deviance vcov coefficients
+#' @export
 Logistik <- function(data, member, member.type = "group", match = "score", 
     anchor = 1:ncol(data), type = "both", criterion = "LRT", all.cov = FALSE) 
 {
