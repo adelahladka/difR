@@ -1,8 +1,6 @@
-#' @export
-difMH <- function(
-    Data, group, focal.name, anchor = NULL, match = "score", MHstat = "MHChisq", correct = TRUE, exact = FALSE,
-    alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL, save.output = FALSE,
-    output = c("out", "default")) {
+difMH <- function(Data, group, focal.name, anchor = NULL, match = "score", MHstat = "MHChisq", correct = TRUE, exact = FALSE,
+                  alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL, puriadjType = "simple",
+                  save.output = FALSE, output = c("out", "default")) {
   if (purify & match[1] != "score") {
     stop("purification not allowed when matching variable is not 'score'",
       call. = FALSE
@@ -13,13 +11,11 @@ difMH <- function(
       if (is.numeric(group)) {
         gr <- Data[, group]
         DATA <- Data[, (1:ncol(Data)) != group]
-        colnames(DATA) <- colnames(Data)[(1:ncol(Data)) !=
-          group]
+        colnames(DATA) <- colnames(Data)[(1:ncol(Data)) != group]
       } else {
         gr <- Data[, colnames(Data) == group]
         DATA <- Data[, colnames(Data) != group]
-        colnames(DATA) <- colnames(Data)[colnames(Data) !=
-          group]
+        colnames(DATA) <- colnames(Data)[colnames(Data) != group]
       }
     } else {
       gr <- group
@@ -29,10 +25,12 @@ difMH <- function(
     Group[gr == focal.name] <- 1
     Q <- switch(MHstat,
       MHChisq = qchisq(1 - alpha, 1),
-      logOR = qnorm(1 -
-        alpha / 2)
+      logOR = qnorm(1 - alpha / 2)
     )
-    if (is.null(Q)) stop("'MHstat' argument not valid", call. = FALSE)
+
+    if (is.null(Q)) {
+      stop("'MHstat' argument not valid", call. = FALSE)
+    }
     if (!is.null(anchor)) {
       dif.anchor <- anchor
       if (is.numeric(anchor)) {
@@ -45,18 +43,46 @@ difMH <- function(
       ANCHOR <- 1:ncol(DATA)
       dif.anchor <- NULL
     }
+
+    if (purify) {
+      if (is.null(p.adjust.method)) {
+        puri.adj.method <- "none"
+        adj.method <- "none"
+      } else {
+        if (puriadjType == "simple") {
+          puri.adj.method <- "none"
+          adj.method <- p.adjust.method
+        } else {
+          puri.adj.method <- p.adjust.method
+          adj.method <- p.adjust.method
+        }
+      }
+    } else {
+      adj.method <- ifelse(is.null(p.adjust.method), "none", p.adjust.method)
+    }
+
     if (exact) {
       if (!purify | match[1] != "score" | !is.null(anchor)) {
         PROV <- mantelHaenszel(DATA, Group, match = match, correct = correct, exact = exact, anchor = ANCHOR)
         STATS <- PROV$resMH
-        if (min(PROV$Pval) >= alpha) {
+        PVAL <- PROV$Pval
+        P.ADJUST <- p.adjust(PVAL, method = adj.method)
+
+        if (min(P.ADJUST, na.rm = T) >= alpha) {
           DIFitems <- "No DIF item detected"
         } else {
           DIFitems <- (1:ncol(DATA))[PROV$Pval < alpha]
         }
+
+        if (is.null(p.adjust.method)) {
+          adjusted.p <- NULL
+        } else {
+          adjusted.p <- P.ADJUST
+        }
+
         RES <- list(
           MH = STATS, p.value = PROV$Pval, alpha = alpha, DIFitems = DIFitems,
-          correct = correct, exact = exact, match = PROV$match, p.adjust.method = p.adjust.method, adjusted.p = NULL, purification = purify, names = colnames(DATA),
+          correct = correct, exact = exact, match = PROV$match, p.adjust.method = p.adjust.method, adjusted.p = adjusted.p, purification = purify, names = colnames(DATA),
           anchor.names = dif.anchor, save.output = save.output, output = output
         )
         if (!is.null(anchor)) {
@@ -73,7 +99,9 @@ difMH <- function(
         noLoop <- FALSE
         prov1 <- mantelHaenszel(DATA, Group, match = match, correct = correct, exact = exact)
         stats1 <- prov1$resMH
-        if (min(prov1$Pval) >= alpha) {
+        pval1 <- prov1$Pval
+        p.adjust1 <- p.adjust(pval1, method = puri.adj.method)
+        if (min(p.adjust1, na.rm = T) >= alpha) {
           DIFitems <- "No DIF item detected"
           noLoop <- TRUE
         } else {
@@ -100,7 +128,9 @@ difMH <- function(
                 match = match, anchor = nodif, exact = exact
               )
               stats2 <- prov2$resMH
-              if (min(prov2$Pval) >= alpha) {
+              pval2 <- prov2$Pval
+              p.adjust2 <- p.adjust(pval2, method = puri.adj.method)
+              if (min(p.adjust2, na.rm = T) >= alpha) {
                 dif2 <- NULL
               } else {
                 dif2 <- (1:ncol(DATA))[prov2$Pval < alpha]
@@ -123,29 +153,31 @@ difMH <- function(
           }
           stats1 <- stats2
           prov1 <- prov2
-          DIFitems <- (1:ncol(DATA))[prov1$Pval < alpha]
+          pval1 <- pval2
+          p.adjust1 <- p.adjust(pval1, method = adj.method)
+          if (min(p.adjust1, na.rm = T) >= alpha) {
+            DIFitems <- "No DIF item detected"
+          } else {
+            DIFitems <- which(!is.na(stats1) & p.adjust1 < alpha)
+          }
         }
         if (!is.null(difPur)) {
-          ro <- co <- NULL
-          for (ir in 1:nrow(difPur)) {
-            ro[ir] <- paste("Step",
-              ir - 1,
-              sep = ""
-            )
-          }
-          for (ic in 1:ncol(difPur)) {
-            co[ic] <- paste("Item",
-              ic,
-              sep = ""
-            )
-          }
-          rownames(difPur) <- ro
-          colnames(difPur) <- co
+          rownames(difPur) <- paste0("Step", 1:nrow(difPur) - 1)
+          colnames(difPur) <- colnames(DATA)
         }
+
+        if (is.null(p.adjust.method)) {
+          adjusted.p <- NULL
+        } else {
+          adjusted.p <- p.adjust1
+        }
+
         RES <- list(
           MH = stats1, p.value = prov1$Pval, alpha = alpha, DIFitems = DIFitems,
-          correct = correct, exact = exact, match = prov1$match, p.adjust.method = p.adjust.method, adjusted.p = NULL, purification = purify, nrPur = nrPur,
-          difPur = difPur, convergence = noLoop, names = colnames(DATA),
+          correct = correct, exact = exact, match = prov1$match, p.adjust.method = p.adjust.method,
+          adjusted.p = adjusted.p, puriadjType = puriadjType, purification = purify, nrPur = nrPur,
+          difPur = difPur, puri.adj.method = puri.adj.method, puriadjType = puriadjType,
+          convergence = noLoop, names = colnames(DATA),
           anchor.names = NULL, save.output = save.output, output = output
         )
       }
@@ -159,16 +191,26 @@ difMH <- function(
           STATS <- log(PROV$resAlpha) / sqrt(PROV$varLambda)
           PVAL <- 2 * (1 - pnorm(abs(STATS)))
         }
-        if (max(abs(STATS), na.rm = TRUE) <= Q) {
+        P.ADJUST <- p.adjust(PVAL, method = adj.method)
+        if (min(P.ADJUST, na.rm = T) >= alpha) {
           DIFitems <- "No DIF item detected"
         } else {
-          DIFitems <- (1:ncol(DATA))[is.na(STATS) == FALSE & abs(STATS) > Q]
+          DIFitems <- which(!is.na(STATS) & P.ADJUST < alpha)
         }
+
+        if (is.null(p.adjust.method)) {
+          adjusted.p <- NULL
+        } else {
+          adjusted.p <- P.ADJUST
+        }
+
         RES <- list(
           MH = STATS, p.value = PVAL, alphaMH = PROV$resAlpha,
           varLambda = PROV$varLambda, MHstat = MHstat,
           alpha = alpha, thr = Q, DIFitems = DIFitems,
-          correct = correct, exact = exact, match = PROV$match, p.adjust.method = p.adjust.method, adjusted.p = NULL, purification = purify, names = colnames(DATA),
+          correct = correct, exact = exact, match = PROV$match,
+          p.adjust.method = p.adjust.method, adjusted.p = adjusted.p,
+          purification = purify, names = colnames(DATA),
           anchor.names = dif.anchor, save.output = save.output, output = output
         )
         if (!is.null(anchor)) {
@@ -187,14 +229,18 @@ difMH <- function(
         prov1 <- mantelHaenszel(DATA, Group, match = match, correct = correct, exact = exact)
         if (MHstat == "MHChisq") {
           stats1 <- prov1$resMH
+          pval1 <- 1 - pchisq(stats1, 1)
         } else {
           stats1 <- log(prov1$resAlpha) / sqrt(prov1$varLambda)
+          pval1 <- 2 * (1 - pnorm(abs(stats1)))
         }
-        if (max(abs(stats1), na.rm = TRUE) <= Q) {
+        p.adjust1 <- p.adjust(pval1, method = puri.adj.method)
+
+        if (min(p.adjust1, na.rm = T) >= alpha) {
           DIFitems <- "No DIF item detected"
           noLoop <- TRUE
         } else {
-          dif <- (1:ncol(DATA))[is.na(stats1) == FALSE & abs(stats1) > Q]
+          dif <- which(!is.na(stats1) & p.adjust1 < alpha)
           difPur <- rep(0, length(stats1))
           difPur[dif] <- 1
           repeat {
@@ -203,7 +249,7 @@ difMH <- function(
             } else {
               nrPur <- nrPur + 1
               nodif <- NULL
-              if (is.null(dif) == TRUE) {
+              if (is.null(dif)) {
                 nodif <- 1:ncol(DATA)
               } else {
                 for (i in 1:ncol(DATA)) {
@@ -212,21 +258,26 @@ difMH <- function(
                   }
                 }
               }
+
               prov2 <- mantelHaenszel(DATA, Group,
                 match = match, correct = correct,
                 anchor = nodif, exact = exact
               )
               if (MHstat == "MHChisq") {
                 stats2 <- prov2$resMH
+                pval2 <- 1 - pchisq(stats2, 1)
               } else {
                 stats2 <- log(prov2$resAlpha) / sqrt(prov2$varLambda)
+                pval2 <- 2 * (1 - pnorm(abs(stats2)))
               }
-              if (max(abs(stats2), na.rm = TRUE) <= Q) {
+              p.adjust2 <- p.adjust(pval2, method = puri.adj.method)
+
+              if (min(p.adjust2, na.rm = T) >= alpha) {
                 dif2 <- NULL
               } else {
-                dif2 <- (1:ncol(DATA))[is.na(stats2) == FALSE & abs(stats2) >
-                  Q]
+                dif2 <- which(!is.na(stats2) & p.adjust2 < alpha)
               }
+
               difPur <- rbind(difPur, rep(0, ncol(DATA)))
               difPur[nrPur + 1, dif2] <- 1
               if (length(dif) != length(dif2)) {
@@ -245,59 +296,38 @@ difMH <- function(
           }
           stats1 <- stats2
           prov1 <- prov2
-          DIFitems <- (1:ncol(DATA))[is.na(stats1) == FALSE & abs(stats1) > Q]
-        }
-        if (is.null(difPur) == FALSE) {
-          ro <- co <- NULL
-          for (ir in 1:nrow(difPur)) {
-            ro[ir] <- paste("Step",
-              ir - 1,
-              sep = ""
-            )
+          pval1 <- pval2
+          p.adjust1 <- p.adjust(pval1, method = adj.method)
+          if (min(p.adjust1, na.rm = T) >= alpha) {
+            DIFitems <- "No DIF item detected"
+          } else {
+            DIFitems <- which(!is.na(stats1) & p.adjust1 < alpha)
           }
-          for (ic in 1:ncol(difPur)) {
-            co[ic] <- paste("Item",
-              ic,
-              sep = ""
-            )
-          }
-          rownames(difPur) <- ro
-          colnames(difPur) <- co
         }
-        if (MHstat == "MHChisq") {
-          PVAL <- 1 - pchisq(stats1, 1)
+        if (!is.null(difPur)) {
+          rownames(difPur) <- paste0("Step", 1:nrow(difPur) - 1)
+          colnames(difPur) <- colnames(DATA)
+        }
+
+        if (is.null(p.adjust.method)) {
+          adjusted.p <- NULL
         } else {
-          PVAL <- 2 * (1 - pnorm(abs(stats1)))
+          adjusted.p <- p.adjust1
         }
+
+
         RES <- list(
-          MH = stats1, p.value = PVAL, alphaMH = prov1$resAlpha,
+          MH = stats1, p.value = pval1, alphaMH = prov1$resAlpha,
           varLambda = prov1$varLambda, MHstat = MHstat,
           alpha = alpha, thr = Q, DIFitems = DIFitems,
-          correct = correct, exact = exact, match = prov1$match, p.adjust.method = p.adjust.method, adjusted.p = NULL, purification = purify, nrPur = nrPur,
+          correct = correct, exact = exact, match = prov1$match,
+          p.adjust.method = p.adjust.method, adjusted.p = adjusted.p, puriadjType = puriadjType,
+          purification = purify, nrPur = nrPur,
           difPur = difPur, convergence = noLoop, names = colnames(DATA),
           anchor.names = NULL, save.output = save.output, output = output
         )
       }
     }
-
-    if (!is.null(p.adjust.method)) {
-      if (exact) {
-        pval <- RES$Pval
-      } else {
-        if (RES$MHstat == "MHChisq") {
-          pval <- 1 - pchisq(RES$MH, 1)
-        } else {
-          pval <- 2 * (1 - pnorm(abs(RES$MH)))
-        }
-      }
-      RES$adjusted.p <- p.adjust(pval, method = p.adjust.method)
-      if (min(RES$adjusted.p, na.rm = TRUE) > alpha) {
-        RES$DIFitems <- "No DIF item detected"
-      } else {
-        RES$DIFitems <- which(RES$adjusted.p < alpha)
-      }
-    }
-
     class(RES) <- "MH"
     return(RES)
   }
@@ -648,8 +678,8 @@ print.MH <- function(x, ...) {
     }
     fileName <- paste(wd, x$output[1], ".txt", sep = "")
     cat("Output was captured and saved into file", "\n",
-      " '", fileName, "'", "\n", "\n",
-      sep = ""
+        " '", fileName, "'", "\n", "\n",
+        sep = ""
     )
   }
 }
