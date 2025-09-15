@@ -149,6 +149,13 @@
 ##' purification process (default is 10).
 ##' @param p.adjust.method either \code{NULL} (default) or the acronym of the
 ##' method for p-value adjustment for multiple comparisons. See \bold{Details}.
+##' @param puriadjType character: type of combination of the item purification
+##'   and the method for p-value adjustment for multiple comparisons. Either
+##'   \code{"simple"} for the item purification followed by the selected
+##'   p-adjustment method (default) or \code{"combined"} for the p-adjustment
+##'   method applied in each iteration of item purification. For details, see
+##'   Hladká, Martinková, and Magis (2024). Argument is ignored when
+##'   \code{purify} is \code{FALSE} or \code{p.adjust.method} is \code{NULL}.
 ##' @param save.output logical: should the output be saved into a text file?
 ##' (default is \code{FALSE}).
 ##' @param output character: a vector of two components. The first component is
@@ -187,6 +194,7 @@
 ##'   \item{nrPur}{the number of iterations in the item purification process. Returned only if \code{purify} is \code{TRUE}.}
 ##'   \item{difPur}{a binary matrix with one row per iteration in the item purification process and one column per item. Zeros and ones in the \emph{i}-th row refer to items which were classified respectively as non-DIF and DIF items at the (\emph{i}-1)-th step. The first row corresponds to the initial classification of the items. Returned only if \code{purify} is \code{TRUE}.}
 ##'   \item{convergence}{logical indicating whether the iterative item purification process stopped before the maximal number \code{nrIter} of allowed iterations. Returned only if \code{purify} is \code{TRUE}.}
+##'   \item{puriadjType}{the value of \code{puriadjType} option. Returned only when \code{purify} is \code{TRUE}.}
 ##'   \item{names}{the names of the items.}
 ##'   \item{anchor.names}{the value of the \code{anchor} argument.}
 ##'   \item{save.output}{the value of the \code{save.output} argument.}
@@ -214,6 +222,11 @@
 ##'
 ##' Agresti, A. (1992). A survey of exact inference for contingency tables.
 ##' \emph{Statistical Science, 7}, 131--177, \doi{10.1214/ss/1177011454}
+##'
+##' Hladká, A., Martinková, P., & Magis, D. (2023). Combining item purification
+##' and multiple comparison adjustment methods in detection of differential item
+##' functioning. \emph{Multivariate Behavioral Research, 59}(1), 46--61,
+##' \doi{10.1080/00273171.2023.2205393}
 ##'
 ##' Holland, P. W. and Thayer, D. T. (1985). An alternative definition of the
 ##' ETS delta scale of item difficulty. \emph{Research Report RR-85-43}.
@@ -280,6 +293,10 @@
 ##'  difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE)
 ##'  difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, nrIter = 5)
 ##'
+##'  # With combination of item purification and multiple comparisons adjustment
+##'  difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple")
+##'  difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")
+##'
 ##'  # Without continuity correction and with 0.01 significance level
 ##'  difMH(verbal, group = "Gender", focal.name = 1, alpha = 0.01, correct = FALSE)
 ##'
@@ -302,13 +319,18 @@
 ##'  path <- "c:/Program Files/"
 ##'  plot(r, save.plot = TRUE, save.options = c("plot", path, "jpeg"))
 ##' }
-##'
+##' @export
 difMH <- function(Data, group, focal.name, anchor = NULL, match = "score", MHstat = "MHChisq", correct = TRUE, exact = FALSE,
                   alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL, puriadjType = "simple",
                   save.output = FALSE, output = c("out", "default")) {
   if (purify & match[1] != "score") {
     stop("purification not allowed when matching variable is not 'score'",
       call. = FALSE
+    )
+  }
+  if (!is.character(puriadjType) || !puriadjType %in% c("simple", "combined")) {
+    stop("'puriadjType' can be either 'simple' or 'combined'.",
+         call. = FALSE
     )
   }
   internalMH <- function() {
@@ -481,9 +503,8 @@ difMH <- function(Data, group, focal.name, anchor = NULL, match = "score", MHsta
           MH = stats1, p.value = prov1$Pval, alpha = alpha, DIFitems = DIFitems,
           correct = correct, exact = exact, match = prov1$match, p.adjust.method = p.adjust.method,
           adjusted.p = adjusted.p, puriadjType = puriadjType, purification = purify, nrPur = nrPur,
-          difPur = difPur, puri.adj.method = puri.adj.method, puriadjType = puriadjType,
-          convergence = noLoop, names = colnames(DATA),
-          anchor.names = NULL, save.output = save.output, output = output
+          difPur = difPur, puri.adj.method = puri.adj.method, convergence = noLoop, puriadjType = puriadjType,
+          names = colnames(DATA), anchor.names = NULL, save.output = save.output, output = output
         )
       }
     } else {
@@ -839,9 +860,17 @@ print.MH <- function(x, ...) {
       BY = "Benjamini-Yekutieli"
     )
     cat(
-      "Multiple comparisons made with", pAdjMeth, "adjustement of p-values",
-      "\n", "\n"
+      "Multiple comparisons made with", pAdjMeth, "adjustement of p-values\n"
     )
+    if (res$purification) {
+      cat(paste0(
+        "Multiple comparison applied after ",
+        ifelse(res$puriadjType == "simple", "", "each iteration of "),
+        "item purification \n\n"
+      ))
+    } else {
+      cat("\n")
+    }
   }
   if (res$exact) {
     met <- "Exact statistic:"

@@ -64,6 +64,14 @@ purification process (default is 10).}
 \item{p.adjust.method}{either \code{NULL} (default) or the acronym of the
 method for p-value adjustment for multiple comparisons. See \bold{Details}.}
 
+\item{puriadjType}{character: type of combination of the item purification
+and the method for p-value adjustment for multiple comparisons. Either
+\code{"simple"} for the item purification followed by the selected
+p-adjustment method (default) or \code{"combined"} for the p-adjustment
+method applied in each iteration of item purification. For details, see
+Hladká, Martinková, and Magis (2024). Argument is ignored when
+\code{purify} is \code{FALSE} or \code{p.adjust.method} is \code{NULL}.}
+
 \item{save.output}{logical: should the output be saved into a text file?
 (default is \code{FALSE}).}
 
@@ -110,6 +118,7 @@ A list of class "MH" with the following arguments:
   \item{nrPur}{the number of iterations in the item purification process. Returned only if \code{purify} is \code{TRUE}.}
   \item{difPur}{a binary matrix with one row per iteration in the item purification process and one column per item. Zeros and ones in the \emph{i}-th row refer to items which were classified respectively as non-DIF and DIF items at the (\emph{i}-1)-th step. The first row corresponds to the initial classification of the items. Returned only if \code{purify} is \code{TRUE}.}
   \item{convergence}{logical indicating whether the iterative item purification process stopped before the maximal number \code{nrIter} of allowed iterations. Returned only if \code{purify} is \code{TRUE}.}
+  \item{puriadjType}{the value of \code{puriadjType} option. Returned only when \code{purify} is \code{TRUE}.}
   \item{names}{the names of the items.}
   \item{anchor.names}{the value of the \code{anchor} argument.}
   \item{save.output}{the value of the \code{save.output} argument.}
@@ -267,6 +276,10 @@ JPEG file. Note that no plot is returned for exact inference.
  difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE)
  difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, nrIter = 5)
 
+ # With combination of item purification and multiple comparisons adjustment
+ difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple")
+ difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")
+
  # Without continuity correction and with 0.01 significance level
  difMH(verbal, group = "Gender", focal.name = 1, alpha = 0.01, correct = FALSE)
 
@@ -289,13 +302,17 @@ JPEG file. Note that no plot is returned for exact inference.
  path <- "c:/Program Files/"
  plot(r, save.plot = TRUE, save.options = c("plot", path, "jpeg"))
 }
-
 }
 \references{
 Agresti, A. (1990). \emph{Categorical data analysis}. New York: Wiley.
 
 Agresti, A. (1992). A survey of exact inference for contingency tables.
 \emph{Statistical Science, 7}, 131--177, \doi{10.1214/ss/1177011454}
+
+Hladká, A., Martinková, P., & Magis, D. (2023). Combining item purification
+and multiple comparison adjustment methods in detection of differential item
+functioning. \emph{Multivariate Behavioral Research, 59}(1), 46--61,
+\doi{10.1080/00273171.2023.2205393}
 
 Holland, P. W. and Thayer, D. T. (1985). An alternative definition of the
 ETS delta scale of item difficulty. \emph{Research Report RR-85-43}.
