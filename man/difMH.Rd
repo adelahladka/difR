@@ -45,7 +45,7 @@ discrete variable with the same length as the number of rows of
 
 \item{MHstat}{character: specifies the DIF statistic to be used for DIF
 identification. Possible values are \code{"MHChisq"} (default) and
-\code{"logOR"}.  See \bold{Details }.}
+\code{"logOR"}. See \bold{Details}.}
 
 \item{correct}{logical: should the continuity correction be used? (default
 is \code{TRUE})}
@@ -56,7 +56,7 @@ is \code{TRUE})}
 \item{alpha}{numeric: significance level (default is 0.05).}
 
 \item{purify}{logical: should the method be used iteratively to purify the
-set of anchor items? (default is FALSE).}
+set of anchor items? (default is \code{FALSE}).}
 
 \item{nrIter}{numeric: the maximal number of iterations in the item
 purification process (default is 10).}
@@ -65,7 +65,7 @@ purification process (default is 10).}
 method for p-value adjustment for multiple comparisons. See \bold{Details}.}
 
 \item{save.output}{logical: should the output be saved into a text file?
-(Default is \code{FALSE}).}
+(default is \code{FALSE}).}
 
 \item{output}{character: a vector of two components. The first component is
 the name of the output file, the second component is either the file path
@@ -84,45 +84,37 @@ or \code{"default"} (default value). See \bold{Details}.}
 \item{save.options}{character: a vector of three components. The first
 component is the name of the output file, the second component is either
 the file path or \code{"default"} (default value), and the third component
-is the file extension, either \code{"pdf"} (default) or \code{"jpeg"}.  See
+is the file extension, either \code{"pdf"} (default) or \code{"jpeg"}. See
 \bold{Details}.}
 
 \item{...}{other generic parameters for the \code{plot} or the \code{print}
 functions.}
 }
 \value{
-A list of class "MH" with the following arguments: \item{MH}{the
-values of the Mantel-Haenszel DIF statistics (either exact or asymptotic).}
-\item{p.value}{the p-values for the Mantel-Haenszel statistics (either
-exact or asymptotic).} \item{alphaMH}{the values of the mantel-Haenszel
-estimates of common odds ratios. Returned only if \code{exact} is
-\code{FALSE}.} \item{varLambda}{the values of the variances of the log
-odds-ratio statistics. Returned only if \code{exact} is \code{FALSE}.}
-\item{MHstat}{the value of the \code{MHstat} argument. Returned only if
-\code{exact} is \code{FALSE}.} \item{alpha}{the value of \code{alpha}
-argument.} \item{thr}{the threshold (cut-score) for DIF detection. Returned
-only if \code{exact} is \code{FALSE}.} \item{DIFitems}{either the column
-indicators of the items which were detected as DIF items, or "No DIF item
-detected".} \item{correct}{the value of \code{correct} option.}
-\item{exact}{the value of \code{exact} option.} \item{match}{a character
-string, either \code{"score"} or \code{"matching variable"} depending on
-the \code{match} argument.} \item{p.adjust.method}{the value of the
-\code{p.adjust.method} argument.} \item{adjusted.p}{either \code{NULL} or
-the vector of adjusted p-values for multiple comparisons.}
-\item{purification}{the value of \code{purify} option.} \item{nrPur}{the
-number of iterations in the item purification process. Returned only if
-\code{purify} is \code{TRUE}.} \item{difPur}{a binary matrix with one row
-per iteration in the item purification process and one column per item.
-Zeros and ones in the \emph{i}-th row refer to items which were classified
-respectively as non-DIF and DIF items at the (\emph{i}-1)-th step. The
-first row corresponds to the initial classification of the items. Returned
-only if \code{purify} is \code{TRUE}.} \item{convergence}{logical
-indicating whether the iterative item purification process stopped before
-the maximal number \code{nrIter} of allowed iterations.  Returned only if
-\code{purify} is \code{TRUE}.} \item{names}{the names of the items.}
-\item{anchor.names}{the value of the \code{anchor} argument.}
-\item{save.output}{the value of the \code{save.output} argument.}
-\item{output}{the value of the \code{output} argument.}
+A list of class "MH" with the following arguments:
+\describe{
+  \item{MH}{the values of the Mantel-Haenszel DIF statistics (either exact or asymptotic).}
+  \item{p.value}{the p-values for the Mantel-Haenszel statistics (either exact or asymptotic).}
+  \item{alphaMH}{the values of the mantel-Haenszel testimates of common odds ratios. Returned only if \code{exact} is \code{FALSE}.}
+  \item{varLambda}{the values of the variances of the log odds-ratio statistics. Returned only if \code{exact} is \code{FALSE}.}
+  \item{MHstat}{the value of the \code{MHstat} argument. Returned only if \code{exact} is \code{FALSE}.}
+  \item{alpha}{the value of \code{alpha} argument.}
+  \item{thr}{the threshold (cut-score) for DIF detection. Returned only if \code{exact} is \code{FALSE}.}
+  \item{DIFitems}{either the column indicators of the items which were detected as DIF items, or \code{"No DIF item detected"}.}
+  \item{correct}{the value of \code{correct} option.}
+  \item{exact}{the value of \code{exact} option.}
+  \item{match}{a character string, either \code{"score"} or \code{"matching variable"} depending on the \code{match} argument.}
+  \item{p.adjust.method}{the value of the \code{p.adjust.method} argument.}
+  \item{adjusted.p}{either \code{NULL} or the vector of adjusted p-values for multiple comparisons.}
+  \item{purification}{the value of \code{purify} option.}
+  \item{nrPur}{the number of iterations in the item purification process. Returned only if \code{purify} is \code{TRUE}.}
+  \item{difPur}{a binary matrix with one row per iteration in the item purification process and one column per item. Zeros and ones in the \emph{i}-th row refer to items which were classified respectively as non-DIF and DIF items at the (\emph{i}-1)-th step. The first row corresponds to the initial classification of the items. Returned only if \code{purify} is \code{TRUE}.}
+  \item{convergence}{logical indicating whether the iterative item purification process stopped before the maximal number \code{nrIter} of allowed iterations. Returned only if \code{purify} is \code{TRUE}.}
+  \item{names}{the names of the items.}
+  \item{anchor.names}{the value of the \code{anchor} argument.}
+  \item{save.output}{the value of the \code{save.output} argument.}
+  \item{output}{the value of the \code{output} argument.}
+}
 }
 \description{
 Performs DIF detection using Mantel-Haenszel method.
@@ -134,9 +126,9 @@ approach.
 
 The \code{Data} is a matrix whose rows correspond to the subjects and
 columns to the items. In addition, \code{Data} can hold the vector of group
-membership.  If so, \code{group} indicates the column of \code{Data} which
+membership. If so, \code{group} indicates the column of \code{Data} which
 corresponds to the group membership, either by specifying its name or by
-giving the column number.  Otherwise, \code{group} must be a vector of same
+giving the column number. Otherwise, \code{group} must be a vector of same
 length as \code{nrow(Data)}.
 
 Missing values are allowed for item responses (not for group membership)
@@ -161,7 +153,7 @@ The DIF statistic is specified by the \code{MHstat} argument. By default,
 chi-square statistic is used. The other optional value is \code{"logOR"},
 and the log odds-ratio statistic (that is, the log of \code{alphaMH}
 divided by the square root of \code{varLambda}) is used. See Penfield and
-Camilli (2007), Philips and Holland (1987) and \code{\link{mantelHaenszel}}
+Camilli (2007), Philips and Holland (1987), and \code{\link{mantelHaenszel}}
 help file.
 
 By default, the asymptotic Mantel-Haenszel statistic is computed. However,
@@ -171,24 +163,24 @@ further details about exact inference.
 
 The threshold (or cut-score) for classifying items as DIF depends on the
 DIF statistic. With the Mantel-Haenszel chi-squared statistic
-(\code{MHstat=="MHChisq"}), it is computed as the quantile of the
+(\code{MHstat = "MHChisq"}), it is computed as the quantile of the
 chi-square distribution with lower-tail probability of one minus
 \code{alpha} and with one degree of freedom. With the log odds-ratio
-statistic (\code{MHstat=="logOR"}), it is computed as the quantile of the
+statistic (\code{MHstat = "logOR"}), it is computed as the quantile of the
 standard normal distribution with lower-tail probability of
 1-\code{alpha}/2. With exact inference, it is simply the \code{alpha} level
 since exact P-values are returned.
 
-By default, the continuity correction factor -0.5 is used (Holland and
-Thayer, 1988). One can nevertheless remove it by specifying
-\code{correct=FALSE}.
+By default, the continuity correction factor -0.5 is used (Holland & Thayer,
+1988). One can nevertheless remove it by specifying \code{correct = FALSE}.
 
 In addition, the Mantel-Haenszel estimates of the common odds ratios
-\eqn{\alpha_{MH}} are used to measure the effect sizes of the items. These
-are obtained by \eqn{\Delta_{MH} = -2.35 \log \alpha_{MH}} (Holland and
-Thayer, 1985). According to the ETS delta scale, the effect size of an item
-is classified as negligible if \eqn{|\Delta_{MH}| \leq 1}, moderate if
-\eqn{1 \leq |\Delta_{MH}| \leq 1.5}, and large if \eqn{|\Delta_{MH}| \geq
+\eqn{\alpha_{\text{MH}}} are used to measure the effect sizes of the items.
+These are obtained by \eqn{\Delta_{\text{MH}} = -2.35 \log
+\alpha_{\text{MH}}} (Holland & Thayer, 1985). According to the ETS delta
+scale, the effect size of an item is classified as negligible if
+\eqn{|\Delta_{\text{MH}}| \leq 1}, moderate if
+\eqn{1 \leq |\Delta_{\text{MH}}| \leq 1.5}, and large if \eqn{|\Delta_{\text{MH}}| \geq
 1.5}. The values of the effect sizes, together with the ETS classification,
 are printed with the output. Note that this is returned only for asymptotic
 tests, i.e. when \code{exact} is \code{FALSE}.
@@ -199,7 +191,7 @@ functioning differently at some step of the process, then the data set of
 the next step consists in all items that are currently anchor (DIF free)
 items, plus the tested item (if necessary). The process stops when either
 two successive applications of the method yield the same classifications of
-the items (Clauser and Mazor, 1998), or when \code{nrIter} iterations are
+the items (Clauser & Mazor, 1998), or when \code{nrIter} iterations are
 run without obtaining two successive identical classifications. In the
 latter case a warning message is printed.
 
@@ -260,7 +252,7 @@ JPEG file. Note that no plot is returned for exact inference.
  # Three equivalent settings of the data matrix and the group membership
  r <- difMH(verbal, group = 25, focal.name = 1)
  difMH(verbal, group = "Gender", focal.name = 1)
- difMH(verbal[,1:24], group = verbal[,25], focal.name = 1)
+ difMH(verbal[, 1:24], group = verbal[, 25], focal.name = 1)
 
  # With log odds-ratio statistic
  r2 <- difMH(verbal, group = 25, focal.name = 1, MHstat = "logOR")
@@ -283,7 +275,7 @@ JPEG file. Note that no plot is returned for exact inference.
  difMH(verbal, group = "Gender", focal.name = 1, anchor = 1:5, purify = TRUE)
 
  # Saving the output into the "MHresults.txt" file (and default path)
- r <- difMH(verbal, group = 25, focal.name = 1, save.output = TRUE, 
+ r <- difMH(verbal, group = 25, focal.name = 1, save.output = TRUE,
             output = c("MHresults","default"))
 
  # Graphical devices
@@ -297,16 +289,13 @@ JPEG file. Note that no plot is returned for exact inference.
  path <- "c:/Program Files/"
  plot(r, save.plot = TRUE, save.options = c("plot", path, "jpeg"))
 }
- 
+
 }
 \references{
-Agresti, A. (1990). \emph{Categorical data analysis}. New York:
-Wiley.
+Agresti, A. (1990). \emph{Categorical data analysis}. New York: Wiley.
 
 Agresti, A. (1992). A survey of exact inference for contingency tables.
-\emph{Statistical Science, 7}, 131-177.
-c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-"10.1214/ss/1177011454")\Sexpr{tools:::Rd_expr_doi("10.1214/ss/1177011454")}
+\emph{Statistical Science, 7}, 131--177, \doi{10.1214/ss/1177011454}
 
 Holland, P. W. and Thayer, D. T. (1985). An alternative definition of the
 ETS delta scale of item difficulty. \emph{Research Report RR-85-43}.
@@ -318,50 +307,47 @@ the Mantel-Haenszel procedure. In H. Wainer and H. I. Braun (Ed.),
 
 Kim, J., and Oshima, T. C. (2013). Effect of multiple testing adjustment in
 differential item functioning detection. \emph{Educational and
-Psychological Measurement, 73}, 458--470.
-c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-"10.1177/0013164412467033")\Sexpr{tools:::Rd_expr_doi("10.1177/0013164412467033")}
+Psychological Measurement, 73}, 458--470, \doi{10.1177/0013164412467033}
 
 Magis, D., Beland, S., Tuerlinckx, F. and De Boeck, P. (2010). A general
 framework and an R package for the detection of dichotomous differential
-item functioning. \emph{Behavior Research Methods, 42}, 847-862.
-c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-"10.3758/BRM.42.3.847")\Sexpr{tools:::Rd_expr_doi("10.3758/BRM.42.3.847")}
+item functioning. \emph{Behavior Research Methods, 42}, 847--862,
+\doi{10.3758/BRM.42.3.847}
 
 Mantel, N. and Haenszel, W. (1959). Statistical aspects of the analysis of
 data from retrospective studies of disease. \emph{Journal of the National
-Cancer Institute, 22}, 719-748.
+Cancer Institute, 22}, 719--748.
 
 Penfield, R. D., and Camilli, G. (2007). Differential item functioning and
 item bias. In C. R. Rao and S. Sinharray (Eds.), \emph{Handbook of
-Statistics 26: Psychometrics} (pp. 125-167). Amsterdam, The Netherlands:
+Statistics 26: Psychometrics} (pp. 125--167). Amsterdam, The Netherlands:
 Elsevier.
 
 Philips, A., and Holland, P. W. (1987). Estimators of the Mantel-Haenszel
-log odds-ratio estimate. \emph{Biometrics, 43}, 425-431.
-c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-"10.2307/2531824")\Sexpr{tools:::Rd_expr_doi("10.2307/2531824")}
+log odds-ratio estimate. \emph{Biometrics, 43}, 425--431, \doi{10.2307/2531824}
 
 Raju, N. S., Bode, R. K. and Larsen, V. S. (1989). An empirical assessment
 of the Mantel-Haenszel statistic to detect differential item functioning.
-\emph{Applied Measurement in Education, 2}, 1-13.
-c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-"10.1207/s15324818ame0201_1")\Sexpr{tools:::Rd_expr_doi("10.1207/s15324818ame0201_1")}
+\emph{Applied Measurement in Education, 2}, 1--13, \doi{10.1207/s15324818ame0201_1}
 
 Uttaro, T. and Millsap, R. E. (1994). Factors influencing the
 Mantel-Haenszel procedure in the detection of differential item
-functioning. \emph{Applied Psychological Measurement, 18}, 15-25.
-c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-"10.1177/014662169401800102")\Sexpr{tools:::Rd_expr_doi("10.1177/014662169401800102")}
+functioning. \emph{Applied Psychological Measurement, 18}, 15--25, \doi{10.1177/014662169401800102}
 }
 \seealso{
-\code{\link{mantelHaenszel}}, \code{\link{dichoDif}},
-\code{\link{p.adjust}}
+\code{\link{mantelHaenszel}}, \code{\link{dichoDif}}, \code{\link{p.adjust}}
 }
 \author{
-David Magis \cr Data science consultant at IQVIA Belux \cr
-Brussels, Belgium \cr Sebastien Beland \cr Faculte des sciences de
-l'education \cr Universite de Montreal (Canada) \cr
-\email{sebastien.beland@umontreal.ca} \cr Gilles Raiche \cr Universite du
-Quebec a Montreal \cr \email{raiche.gilles@uqam.ca} \cr
+David Magis \cr
+Data science consultant at IQVIA Belux \cr
+Brussels, Belgium\cr
+
+Sebastien Beland \cr
+Faculte des sciences de l'education \cr
+Universite de Montreal (Canada) \cr
+\email{sebastien.beland@umontreal.ca} \cr
+
+Gilles Raiche \cr
+Universite du Quebec a Montreal \cr
+\email{raiche.gilles@uqam.ca} \cr
 }
