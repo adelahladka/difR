@@ -2,7 +2,7 @@
 ##'
 ##' Performs DIF detection using logistic regression method.
 ##'
-##' The logistic regression method (Swaminathan and Rogers, 1990) allows for
+##' The logistic regression method (Swaminathan & Rogers, 1990) allows for
 ##' detecting both uniform and non-uniform differential item functioning
 ##' without requiring an item response model approach. It consists in fitting a
 ##' logistic model with the matching criterion, the group membership and an
@@ -10,11 +10,11 @@
 ##' parameters related to group membership and the group-score interaction is
 ##' then evaluated by means of either the likelihood-ratio test or the Wald
 ##' test. The argument \code{type} permits to test either both uniform and
-##' nonuniform effects simultaneously (\code{type="both"}), only uniform DIF
-##' effect (\code{type="udif"}) or only nonuniform DIF effect
-##' (\code{type="nudif"}). The argument \code{criterion} permits to select
-##' either the likelihood ratio test (\code{criterion=="LRT"}) or the Wald test
-##' (\code{criterion=="Wald"}). See \code{\link{Logistik}} for further details.
+##' nonuniform effects simultaneously (\code{type = "both"}), only uniform DIF
+##' effect (\code{type = "udif"}) or only nonuniform DIF effect
+##' (\code{type = "nudif"}). The argument \code{criterion} permits to select
+##' either the likelihood ratio test (\code{criterion = "LRT"}) or the Wald test
+##' (\code{criterion = "Wald"}). See \code{\link{Logistik}} for further details.
 ##'
 ##' The group membership can be either a vector of two distinct values, one for
 ##' the reference group and one for the focal group, or a continuous or
@@ -38,9 +38,9 @@
 ##'
 ##' The \code{Data} is a matrix whose rows correspond to the subjects and
 ##' columns to the items. In addition, \code{Data} can hold the vector of group
-##' membership.  If so, \code{group} indicates the column of \code{Data} which
+##' membership. If so, \code{group} indicates the column of \code{Data} which
 ##' corresponds to the group membership, either by specifying its name or by
-##' giving the column number.  Otherwise, \code{group} must be a vector of same
+##' giving the column number. Otherwise, \code{group} must be a vector of same
 ##' length as \code{nrow(Data)}.
 ##'
 ##' Missing values are allowed for item responses (not for group membership)
@@ -49,8 +49,8 @@
 ##'
 ##' The threshold (or cut-score) for classifying items as DIF is computed as
 ##' the quantile of the chi-squared distribution with lower-tail probability of
-##' one minus \code{alpha} and with one (if \code{type="udif"} or
-##' \code{type="nudif"}) or two (if \code{type="both"}) degrees of freedom.
+##' one minus \code{alpha} and with one (if \code{type = "udif"} or
+##' \code{type = "nudif"}) or two (if \code{type = "both"}) degrees of freedom.
 ##'
 ##' Item purification can be performed by setting \code{purify} to \code{TRUE}.
 ##' Purification works as follows: if at least one item is detected as
@@ -58,7 +58,7 @@
 ##' of the next step consists in all items that are currently anchor (DIF free)
 ##' items, plus the tested item (if necessary). The process stops when either
 ##' two successive applications of the method yield the same classifications of
-##' the items (Clauser and Mazor, 1998), or when \code{nrIter} iterations are
+##' the items (Clauser & Mazor, 1998), or when \code{nrIter} iterations are
 ##' run without obtaining two successive identical classifications. In the
 ##' latter case a warning message is printed. Note that purification is
 ##' possible only if the test score is considered as the matching criterion.
@@ -90,13 +90,13 @@
 ##'
 ##' The measures of effect size are provided by the difference \eqn{\Delta R^2}
 ##' between the \eqn{R^2} coefficients of the two nested models (Nagelkerke,
-##' 1991; Gomez-Benito, Dolores Hidalgo and Padilla, 2009). The effect sizes
+##' 1991; Gomez-Benito, Dolores Hidalgo & Padilla, 2009). The effect sizes
 ##' are classified as "negligible", "moderate" or "large". Two scales are
 ##' available, one from Zumbo and Thomas (1997) and one from Jodoin and Gierl
 ##' (2001). The output displays the \eqn{\Delta R^2} measures, together with
 ##' the two classifications.
 ##'
-##' The output of the \code{difLogistic}, as displayed by the
+##' The output of the \code{difLogistic()} function, as displayed by the
 ##' \code{print.Logistic} function, can be stored in a text file provided that
 ##' \code{save.output} is set to \code{TRUE} (the default value \code{FALSE}
 ##' does not execute the storage). In this case, the name of the text file must
@@ -109,15 +109,15 @@
 ##' illustration.
 ##'
 ##' Two types of plots are available. The first one is obtained by setting
-##' \code{plot="lrStat"} and it is the default option. The likelihood ratio
+##' \code{plot = "lrStat"} and it is the default option. The likelihood ratio
 ##' statistics are displayed on the Y axis, for each item. The detection
 ##' threshold is displayed by a horizontal line, and items flagged as DIF are
 ##' printed with the color defined by argument \code{col}. By default, items
-##' are spotted with their number identification (\code{number=TRUE});
+##' are spotted with their number identification (\code{number = TRUE});
 ##' otherwise they are simply drawn as dots whose form is given by the option
 ##' \code{pch}.
 ##'
-##' The other type of plot is obtained by setting \code{plot="itemCurve"}. In
+##' The other type of plot is obtained by setting \code{plot = "itemCurve"}. In
 ##' this case, the fitted logistic curves are displayed for one specific item
 ##' set by the argument \code{item}. The latter argument can hold either the
 ##' name of the item or its number identification. If the argument
@@ -145,7 +145,7 @@
 ##' @param Data numeric: either the data matrix only, or the data matrix plus
 ##' the vector of group membership. See \bold{Details}.
 ##' @param group numeric or character: either the vector of group membership or
-##' the column indicator (within \code{data}) of group membership. See
+##' the column indicator (within \code{Data}) of group membership. See
 ##' \bold{Details}.
 ##' @param focal.name numeric or character indicating the level of \code{group}
 ##' which corresponds to the focal group. Ignored if \code{member.type} is not
@@ -155,8 +155,7 @@
 ##' \code{"score"}. See \bold{Details}.
 ##' @param member.type character: either \code{"group"} (default) to specify
 ##' that group membership is made of two groups, or \code{"cont"} to indicate
-##' that group membership is based on a continuous criterion. See
-##' \bold{Details}.
+##' that group membership is based on a continuous criterion. See \bold{Details}.
 ##' @param match specifies the type of matching criterion. Can be either
 ##' \code{"score"} (default) to compute the test score, or any continuous or
 ##' discrete variable with the same length as the number of rows of
@@ -170,7 +169,7 @@
 ##' @param alpha numeric: significance level (default is 0.05).
 ##' @param all.cov logical: should \emph{all} covariance matrices of model
 ##' parameter estimates be returned (as lists) for both nested models and all
-##' items? (default is \code{FALSE}.
+##' items? (default is \code{FALSE}).
 ##' @param purify logical: should the method be used iteratively to purify the
 ##' set of anchor items? (default is FALSE). Ignored if \code{match} is not
 ##' \code{"score"}.
@@ -179,7 +178,7 @@
 ##' @param p.adjust.method either \code{NULL} (default) or the acronym of the
 ##' method for p-value adjustment for multiple comparisons. See \bold{Details}.
 ##' @param save.output logical: should the output be saved into a text file?
-##' (Default is \code{FALSE}).
+##' (default is \code{FALSE}).
 ##' @param output character: a vector of two components. The first component is
 ##' the name of the output file, the second component is either the file path
 ##' or \code{"default"} (default value). See \bold{Details}.
@@ -187,8 +186,7 @@
 ##' @param plot character: the type of plot, either \code{"lrStat"} (default)
 ##' or \code{"itemCurve"}. See \bold{Details}.
 ##' @param item numeric or character: either the number or the name of the item
-##' for which logistic curves are plotted. Used only when
-##' \code{plot="itemCurve"}.
+##' for which logistic curves are plotted. Used only when \code{plot = "itemCurve"}.
 ##' @param itemFit character: the model to be selected for drawing the item
 ##' curves. Possible values are \code{"best"} (default) for drawing from the
 ##' best of the two models, and \code{"null"} for using fitted parameters of
@@ -199,7 +197,7 @@
 ##' (default is \code{TRUE}).
 ##' @param colIC,ltyIC vectors of two elements of the usual \code{col} and
 ##' \code{lty} arguments for logistic curves. Used only when
-##' \code{plot="itemCurve"}.
+##' \code{plot = "itemCurve"}.
 ##' @param save.plot logical: should the plot be saved into a separate file?
 ##' (default is \code{FALSE}).
 ##' @param save.options character: a vector of three components. The first
@@ -213,107 +211,92 @@
 ##' \code{"lrStat"}.
 ##' @param ... other generic parameters for the \code{plot} or the \code{print}
 ##' functions.
-##' @return A list of class "Logistic" with the following arguments:
-##' \item{Logistik}{the values of the logistic regression statistics.}
-##' \item{p.value}{the vector of p-values for the logistic regression
-##' statistics.} \item{logitPar}{a matrix with one row per item and four
-##' columns, holding the fitted parameters of the best model (among the two
-##' tested models) for each item.} \item{logitSe}{a matrix with one row per
-##' item and four columns, holding the standard errors of the fitted parameters
-##' of the best model (among the two tested models) for each item.}
-##' \item{parM0}{the matrix of fitted parameters of the null model \eqn{M_0},
-##' as returned by the \code{\link{Logistik}} command.} \item{seM0}{the matrix
-##' of standard error of fitted parameters of the null model \eqn{M_0}, as
-##' returned by the \code{\link{Logistik}} command.} \item{cov.M0}{either
-##' \code{NULL} (if \code{all.cov} argument is \code{FALSE}) or a list of
-##' covariance matrices of parameter estimates of the "full" model (\eqn{M_0})
-##' for each item (if \code{all.cov} argument is \code{TRUE}).}
-##' \item{cov.M1}{either \code{NULL} (if \code{all.cov} argument is
-##' \code{FALSE}) or a list of covariance matrices of parameter estimates of
-##' the "reduced" model (\eqn{M_1}) for each item (if \code{all.cov} argument
-##' is \code{TRUE}).} \item{deltaR2}{the differences in Nagelkerke's \eqn{R^2}
-##' coefficients. See \bold{Details}.} \item{alpha}{the value of \code{alpha}
-##' argument.} \item{thr}{the threshold (cut-score) for DIF detection.}
-##' \item{DIFitems}{either the column indicators for the items which were
-##' detected as DIF items, or "No DIF item detected".} \item{member.type}{the
-##' value of the \code{member.type} argument.} \item{match}{a character string,
-##' either \code{"score"} or \code{"matching variable"} depending on the
-##' \code{match} argument.} \item{type}{the value of \code{type} argument.}
-##' \item{p.adjust.method}{the value of the \code{p.adjust.method} argument.}
-##' \item{adjusted.p}{either \code{NULL} or the vector of adjusted p-values for
-##' multiple comparisons.} \item{purification}{the value of \code{purify}
-##' option.} \item{nrPur}{the number of iterations in the item purification
-##' process. Returned only if \code{purify} is \code{TRUE}.} \item{difPur}{a
-##' binary matrix with one row per iteration in the item purification process
-##' and one column per item. Zeros and ones in the \emph{i}-th row refer to
-##' items which were classified respectively as non-DIF and DIF items at the
-##' (\emph{i}-1)-th step. The first row corresponds to the initial
-##' classification of the items. Returned only if \code{purify} is
-##' \code{TRUE}.} \item{convergence}{logical indicating whether the iterative
-##' item purification process stopped before the maximal number of
-##' \code{nrItem} allowed iterations.  Returned only if \code{purify} is
-##' \code{TRUE}.} \item{names}{the names of the items.} \item{anchor.names}{the
-##' value of the \code{anchor} argument.} \item{criterion}{the value of the
-##' \code{criterion} argument.} \item{save.output}{the value of the
-##' \code{save.output} argument.} \item{output}{the value of the \code{output}
-##' argument.}
-##' @author David Magis \cr Data science consultant at IQVIA Belux \cr
-##' Brussels, Belgium \cr Sebastien Beland \cr Faculte des sciences de
-##' l'education \cr Universite de Montreal (Canada) \cr
-##' \email{sebastien.beland@@umontreal.ca} \cr Gilles Raiche \cr Universite du
-##' Quebec a Montreal \cr \email{raiche.gilles@@uqam.ca} \cr
+##'
+##' @return A list of class \code{"Logistic"} with the following arguments:
+##' \describe{
+##'   \item{Logistik}{the values of the logistic regression statistics.}
+##'   \item{p.value}{the vector of p-values for the logistic regression statistics.}
+##'   \item{logitPar}{a matrix with one row per item and four columns, holding the fitted parameters of the best model (among the two tested models) for each item.}
+##'   \item{logitSe}{a matrix with one row per item and four columns, holding the standard errors of the fitted parameters of the best model (among the two tested models) for each item.}
+##'   \item{parM0}{the matrix of fitted parameters of the null model \eqn{M_0}, as returned by the \code{\link{Logistik}} command.}
+##'   \item{seM0}{the matrix of standard error of fitted parameters of the null model \eqn{M_0}, as returned by the \code{\link{Logistik}} command.}
+##'   \item{cov.M0}{either \code{NULL} (if \code{all.cov} argument is \code{FALSE}) or a list of covariance matrices of parameter estimates of the "full" model (\eqn{M_0}) for each item (if \code{all.cov} argument is \code{TRUE}).}
+##'   \item{cov.M1}{either \code{NULL} (if \code{all.cov} argument is \code{FALSE}) or a list of covariance matrices of parameter estimates of the "reduced" model (\eqn{M_1}) for each item (if \code{all.cov} argument is \code{TRUE}).}
+##'   \item{deltaR2}{the differences in Nagelkerke's \eqn{R^2} coefficients. See \bold{Details}.}
+##'   \item{alpha}{the value of \code{alpha} argument.}
+##'   \item{thr}{the threshold (cut-score) for DIF detection.}
+##'   \item{DIFitems}{either the column indicators for the items which were detected as DIF items, or \code{"No DIF item detected"}.}
+##'   \item{member.type}{the value of the \code{member.type} argument.}
+##'   \item{match}{a character string, either \code{"score"} or \code{"matching variable"} depending on the \code{match} argument.}
+##'   \item{type}{the value of \code{type} argument.}
+##'   \item{p.adjust.method}{the value of the \code{p.adjust.method} argument.}
+##'   \item{adjusted.p}{either \code{NULL} or the vector of adjusted p-values for multiple comparisons.}
+##'   \item{purification}{the value of \code{purify} option.}
+##'   \item{nrPur}{the number of iterations in the item purification process. Returned only if \code{purify} is \code{TRUE}.}
+##'   \item{difPur}{a binary matrix with one row per iteration in the item purification process and one column per item. Zeros and ones in the \emph{i}-th row refer to items which were classified respectively as non-DIF and DIF items at the (\emph{i}-1)-th step. The first row corresponds to the initial classification of the items. Returned only if \code{purify} is \code{TRUE}.}
+##'   \item{convergence}{logical indicating whether the iterative item purification process stopped before the maximal number of \code{nrItem} allowed iterations. Returned only if \code{purify} is \code{TRUE}.}
+##'   \item{names}{the names of the items.}
+##'   \item{anchor.names}{the value of the \code{anchor} argument.}
+##'   \item{criterion}{the value of the \code{criterion} argument.}
+##'   \item{save.output}{the value of the \code{save.output} argument.}
+##'   \item{output}{the value of the \code{output} argument.}
+##' }
+##'
+##' @author
+##' David Magis \cr
+##' Data science consultant at IQVIA Belux \cr
+##' Brussels, Belgium \cr
+##'
+##' Sebastien Beland \cr
+##' Faculte des sciences de l'education \cr
+##' Universite de Montreal (Canada) \cr
+##' \email{sebastien.beland@@umontreal.ca} \cr
+##'
+##' Gilles Raiche \cr Universite du
+##' Quebec a Montreal \cr
+##' \email{raiche.gilles@@uqam.ca} \cr
+##'
 ##' @seealso \code{\link{Logistik}}, \code{\link{dichoDif}}
-##' @references Clauser, B.E. and Mazor, K.M. (1998). Using statistical
+##'
+##' @references
+##' Clauser, B.E. and Mazor, K.M. (1998). Using statistical
 ##' procedures to identify differential item functioning test items.
-##' \emph{Educational Measurement: Issues and Practice, 17}, 31-44.
+##' \emph{Educational Measurement: Issues and Practice, 17}, 31--44.
 ##'
 ##' Finch, W.H. and French, B. (2007). Detection of crossing differential item
 ##' functioning: a comparison of four methods. \emph{Educational and
-##' Psychological Measurement, 67}, 565-582.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.1177/0013164406296975")\Sexpr{tools:::Rd_expr_doi("10.1177/0013164406296975")}
+##' Psychological Measurement, 67}, 565--582, \doi{10.1177/0013164406296975}
 ##'
 ##' Gomez-Benito, J., Dolores Hidalgo, M. and Padilla, J.-L. (2009). Efficacy
-##' of effect size measures in logistic regression: an application for
-##' detecting DIF.  \emph{Methodology, 5}, 18-25.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.1027/1614-2241.5.1.18")\Sexpr{tools:::Rd_expr_doi("10.1027/1614-2241.5.1.18")}
+##' of effect size measures in logistic regression: An application for
+##' detecting DIF. \emph{Methodology, 5}, 18--25, \doi{10.1027/1614-2241.5.1.18}
 ##'
 ##' Hidalgo, M. D. and Lopez-Pina, J.A. (2004). Differential item functioning
-##' detection and effect size: a comparison between logistic regression and
+##' detection and effect size: A comparison between logistic regression and
 ##' Mantel-Haenszel procedures. \emph{Educational and Psychological
-##' Measurement, 64}, 903-915.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.1177/0013164403261769")\Sexpr{tools:::Rd_expr_doi("10.1177/0013164403261769")}
+##' Measurement, 64}, 903--915, \doi{10.1177/0013164403261769}
 ##'
 ##' Jodoin, M. G. and Gierl, M. J. (2001). Evaluating Type I error and power
 ##' rates using an effect size measure with logistic regression procedure for
-##' DIF detection. \emph{Applied Measurement in Education, 14}, 329-349.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.1207/S15324818AME1404_2")\Sexpr{tools:::Rd_expr_doi("10.1207/S15324818AME1404_2")}
+##' DIF detection. \emph{Applied Measurement in Education, 14}, 329--349,
+##' \doi{10.1207/S15324818AME1404_2}
 ##'
 ##' Kim, J., and Oshima, T. C. (2013). Effect of multiple testing adjustment in
 ##' differential item functioning detection. \emph{Educational and
-##' Psychological Measurement, 73}, 458--470.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.1177/0013164412467033")\Sexpr{tools:::Rd_expr_doi("10.1177/0013164412467033")}
+##' Psychological Measurement, 73}, 458--470, \doi{10.1177/0013164412467033}
 ##'
 ##' Magis, D., Beland, S., Tuerlinckx, F. and De Boeck, P. (2010). A general
 ##' framework and an R package for the detection of dichotomous differential
-##' item functioning. \emph{Behavior Research Methods, 42}, 847-862.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.3758/BRM.42.3.847")\Sexpr{tools:::Rd_expr_doi("10.3758/BRM.42.3.847")}
+##' item functioning. \emph{Behavior Research Methods, 42}, 847--862,
+##' \doi{10.3758/BRM.42.3.847}
 ##'
 ##' Nagelkerke, N. J. D. (1991). A note on a general definition of the
-##' coefficient of determination. \emph{Biometrika, 78}, 691-692.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.1093/biomet/78.3.691")\Sexpr{tools:::Rd_expr_doi("10.1093/biomet/78.3.691")}
+##' coefficient of determination. \emph{Biometrika, 78}, 691--692,
+##' \doi{10.1093/biomet/78.3.691}
 ##'
 ##' Swaminathan, H. and Rogers, H. J. (1990). Detecting differential item
 ##' functioning using logistic regression procedures. \emph{Journal of
-##' Educational Measurement, 27}, 361-370.
-##' c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-##' "10.1111/j.1745-3984.1990.tb00754.x")\Sexpr{tools:::Rd_expr_doi("10.1111/j.1745-3984.1990.tb00754.x")}
+##' Educational Measurement, 27}, 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}
 ##'
 ##' Zumbo, B.D. (1999). \emph{A handbook on the theory and methods of
 ##' differential item functioning (DIF): logistic regression modelling as a
@@ -325,6 +308,7 @@
 ##' model-based approach for studying DIF}. Prince George, Canada: University
 ##' of Northern British Columbia, Edgeworth Laboratory for Quantitative
 ##' Behavioral Science.
+##'
 ##' @examples
 ##'
 ##' \dontrun{
@@ -333,17 +317,17 @@
 ##'  data(verbal)
 ##'
 ##'  # Excluding the "Anger" variable
-##'  anger <- verbal[,colnames(verbal)=="Anger"]
-##'  verbal <- verbal[,colnames(verbal)!="Anger"]
+##'  anger <- verbal[, colnames(verbal) == "Anger"]
+##'  verbal <- verbal[, colnames(verbal) != "Anger"]
 ##'
 ##'  # Testing both DIF effects simultaneously
 ##'  # Three equivalent settings of the data matrix and the group membership
-##'  r <- difLogistic(verbal, group=25, focal.name = 1)
+##'  r <- difLogistic(verbal, group = 25, focal.name = 1)
 ##'  difLogistic(verbal, group = "Gender", focal.name = 1)
-##'  difLogistic(verbal[,1:24], group = verbal[,25], focal.name = 1)
+##'  difLogistic(verbal[, 1:24], group = verbal[, 25], focal.name = 1)
 ##'
 ##'  # Returning all covariance matrices of model parameters
-##'  difLogistic(verbal, group=25, focal.name = 1, all.cov = TRUE)
+##'  difLogistic(verbal, group = 25, focal.name = 1, all.cov = TRUE)
 ##'
 ##'  # Testing both DIF effects with the Wald test
 ##'  r2 <- difLogistic(verbal, group = 25, focal.name = 1, criterion = "Wald")
@@ -355,7 +339,7 @@
 ##'  difLogistic(verbal, group = 25, focal.name = 1, type = "udif")
 ##'
 ##'  # Multiple comparisons adjustment using Benjamini-Hochberg method
-##'  difLogistic(verbal, group=25, focal.name = 1, p.adjust.method = "BH")
+##'  difLogistic(verbal, group = 25, focal.name = 1, p.adjust.method = "BH")
 ##'
 ##'  # With item purification
 ##'  difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE)
@@ -369,7 +353,7 @@
 ##'
 ##'  # Using trait anger score as the group variable (i.e. testing
 ##'  # for DIF with respect to trait anger score)
-##'  difLogistic(verbal[,1:24],group = anger,member.type = "cont")
+##'  difLogistic(verbal[, 1:24], group = anger, member.type = "cont")
 ##'
 ##'  # Saving the output into the "Lresults.txt" file (and default path)
 ##'  r <- difLogistic(verbal, group = 25, focal.name = 1, save.output = TRUE,
@@ -391,7 +375,7 @@
 ##'  plot(r, save.plot = TRUE, save.options = c("plot", path, "jpeg"))
 ##' }
 ##'
-##' @export difLogistic
+##' @export
 difLogistic <- function(Data, group, focal.name, anchor = NULL, member.type = "group",
                         match = "score", type = "both", criterion = "LRT",
                         alpha = 0.05, all.cov = FALSE, purify = FALSE, nrIter = 10,
