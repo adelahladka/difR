@@ -1,10 +1,8 @@
-# LOGISTIC REGRESSION
-#' @export
-difLogistic <- function(
-    Data, group, focal.name, anchor = NULL, member.type = "group",
-    match = "score", type = "both", criterion = "LRT", alpha = 0.05, all.cov = FALSE,
-    purify = FALSE, nrIter = 10, p.adjust.method = NULL, save.output = FALSE,
-    output = c("out", "default")) {
+difLogistic <- function(Data, group, focal.name, anchor = NULL, member.type = "group",
+                        match = "score", type = "both", criterion = "LRT",
+                        alpha = 0.05, all.cov = FALSE, purify = FALSE, nrIter = 10,
+                        p.adjust.method = NULL, puriadjType = "simple",
+                        save.output = FALSE, output = c("out", "default")) {
   if (member.type != "group" & member.type != "cont") {
     stop("'member.type' must be either 'group' or 'cont'",
       call. = FALSE
@@ -20,13 +18,11 @@ difLogistic <- function(
       if (is.numeric(group)) {
         gr <- Data[, group]
         DATA <- Data[, (1:ncol(Data)) != group]
-        colnames(DATA) <- colnames(Data)[(1:ncol(Data)) !=
-          group]
+        colnames(DATA) <- colnames(Data)[(1:ncol(Data)) != group]
       } else {
         gr <- Data[, colnames(Data) == group]
         DATA <- Data[, colnames(Data) != group]
-        colnames(DATA) <- colnames(Data)[colnames(Data) !=
-          group]
+        colnames(DATA) <- colnames(Data)[colnames(Data) != group]
       }
     } else {
       gr <- group
@@ -40,8 +36,7 @@ difLogistic <- function(
     }
     Q <- switch(type,
       both = qchisq(1 - alpha, 2),
-      udif = qchisq(1 -
-        alpha, 1),
+      udif = qchisq(1 - alpha, 1),
       nudif = qchisq(1 - alpha, 1)
     )
     if (!is.null(anchor)) {
@@ -51,15 +46,33 @@ difLogistic <- function(
       } else {
         ANCHOR <- NULL
         for (i in 1:length(anchor)) {
-          ANCHOR[i] <- (1:ncol(DATA))[colnames(DATA) ==
-            anchor[i]]
+          ANCHOR[i] <- (1:ncol(DATA))[colnames(DATA) == anchor[i]]
         }
       }
     } else {
       ANCHOR <- 1:ncol(DATA)
       dif.anchor <- NULL
     }
+
+    if (purify) {
+      if (is.null(p.adjust.method)) {
+        puri.adj.method <- "none"
+        adj.method <- "none"
+      } else {
+        if (puriadjType == "simple") {
+          puri.adj.method <- "none"
+          adj.method <- p.adjust.method
+        } else {
+          puri.adj.method <- p.adjust.method
+          adj.method <- p.adjust.method
+        }
+      }
+    } else {
+      adj.method <- ifelse(is.null(p.adjust.method), "none", p.adjust.method)
+    }
+
     DDF <- ifelse(type == "both", 2, 1)
+
     if (!purify | match[1] != "score" | !is.null(anchor)) {
       PROV <- Logistik(DATA, Group,
         member.type = member.type,
@@ -68,30 +81,36 @@ difLogistic <- function(
       )
       STATS <- PROV$stat
       PVAL <- 1 - pchisq(STATS, DDF)
+      P.ADJUST <- p.adjust(PVAL, method = adj.method)
       deltaR2 <- PROV$deltaR2
-      if (max(STATS) <= Q) {
+
+      logitPar <- PROV$parM1
+      logitSe <- PROV$seM1
+
+      if (min(P.ADJUST, na.rm = T) >= 0.05) {
         DIFitems <- "No DIF item detected"
-        logitPar <- PROV$parM1
-        logitSe <- PROV$seM1
       } else {
-        DIFitems <- (1:ncol(DATA))[STATS > Q]
-        logitPar <- PROV$parM1
-        logitSe <- PROV$seM1
-        for (idif in 1:length(DIFitems)) {
-          logitPar[DIFitems[idif], ] <- PROV$parM0[DIFitems[idif], ]
-          logitSe[DIFitems[idif], ] <- PROV$seM0[DIFitems[idif], ]
-        }
+        DIFitems <- which(P.ADJUST < alpha)
+        logitPar[DIFitems, ] <- PROV$parM0[DIFitems, ]
+        logitSe[DIFitems, ] <- PROV$seM0[DIFitems, ]
+      }
+
+      if (is.null(p.adjust.method)) {
+        adjusted.p <- NULL
+      } else {
+        adjusted.p <- P.ADJUST
       }
       RES <- list(
         Logistik = STATS, p.value = PVAL, logitPar = logitPar,
         logitSe = logitSe, parM0 = PROV$parM0, seM0 = PROV$seM0,
-        cov.M0 = PROV$cov.M0, cov.M1 = PROV$cov.M1,
-        deltaR2 = deltaR2, alpha = alpha, thr = Q, DIFitems = DIFitems,
+        cov.M0 = PROV$cov.M0, cov.M1 = PROV$cov.M1, deltaR2 = deltaR2,
+        alpha = alpha, thr = Q, DIFitems = DIFitems,
         member.type = member.type, match = PROV$match,
         type = type, p.adjust.method = p.adjust.method,
-        adjusted.p = NULL, purification = purify, names = colnames(DATA),
+        adjusted.p = adjusted.p, purification = purify, names = colnames(DATA),
         anchor.names = dif.anchor, criterion = criterion,
-        save.output = save.output, output = output
+        save.output = save.output, output = output,
+        Data = DATA, group = Group
       )
       if (!is.null(anchor) & match[1] == "score") {
         RES$Logistik[ANCHOR] <- NA
@@ -114,14 +133,16 @@ difLogistic <- function(
         match = match, type = type, criterion = criterion, all.cov = all.cov
       )
       stats1 <- prov1$stat
+      pval1 <- 1 - pchisq(stats1, DDF)
+      p.adjust1 <- p.adjust(pval1, method = puri.adj.method)
       deltaR2 <- prov1$deltaR2
-      if (max(stats1) <= Q) {
+      if (min(p.adjust1, na.rm = T) >= alpha) {
         DIFitems <- "No DIF item detected"
         logitPar <- prov1$parM1
         logitSe <- prov1$seM1
         noLoop <- TRUE
       } else {
-        dif <- (1:ncol(DATA))[stats1 > Q]
+        dif <- which(p.adjust1 < alpha)
         difPur <- rep(0, length(stats1))
         difPur[dif] <- 1
         repeat {
@@ -145,20 +166,25 @@ difLogistic <- function(
               type = type, criterion = criterion, all.cov = all.cov
             )
             stats2 <- prov2$stat
+            pval2 <- 1 - pchisq(stats2, DDF)
+            p.adjust2 <- p.adjust(pval2, method = puri.adj.method)
             deltaR2 <- prov2$deltaR2
-            if (max(stats2) <= Q) {
+            if (min(p.adjust2, na.rm = T) >= alpha) {
               dif2 <- NULL
             } else {
-              dif2 <- (1:ncol(DATA))[stats2 > Q]
+              dif2 <- which(p.adjust2 < alpha)
             }
             difPur <- rbind(difPur, rep(0, ncol(DATA)))
             difPur[nrPur + 1, dif2] <- 1
+            dif <- sort(dif)
+            dif2 <- sort(dif2)
+
             if (length(dif) != length(dif2)) {
               dif <- dif2
             } else {
               dif <- sort(dif)
               dif2 <- sort(dif2)
-              if (sum(dif == dif2) == length(dif)) {
+              if (all(dif == dif2)) {
                 noLoop <- TRUE
                 break
               } else {
@@ -169,16 +195,21 @@ difLogistic <- function(
         }
         prov1 <- prov2
         stats1 <- stats2
-        PVAL <- 1 - pchisq(stats1, DDF)
+        pval1 <- 1 - pchisq(stats1, DDF)
+        p.adjust1 <- p.adjust(pval1, method = adj.method)
         deltaR2 <- deltaR2
-        DIFitems <- (1:ncol(DATA))[stats1 > Q]
         logitPar <- prov1$parM1
         logitSe <- prov1$seM1
-        for (idif in 1:length(DIFitems)) {
-          logitPar[DIFitems[idif], ] <- prov1$parM0[DIFitems[idif], ]
-          logitSe[DIFitems[idif], ] <- prov1$seM0[DIFitems[idif], ]
+
+        if (min(p.adjust1, na.rm = T) >= alpha) {
+          DIFitems <- "No DIF item detected"
+        } else {
+          DIFitems <- which(!is.na(stats1) & p.adjust1 < alpha)
+          logitPar[DIFitems, ] <- prov1$parM0[DIFitems, ]
+          logitSe[DIFitems, ] <- prov1$seM0[DIFitems, ]
         }
       }
+
       if (is.null(difPur) == FALSE) {
         ro <- co <- NULL
         for (ir in 1:nrow(difPur)) {
@@ -195,33 +226,26 @@ difLogistic <- function(
         }
         rownames(difPur) <- ro
         colnames(difPur) <- co
+
+      if (is.null(p.adjust.method)) {
+        adjusted.p <- NULL
+      } else {
+        adjusted.p <- p.adjust1
       }
+
       RES <- list(
-        Logistik = stats1, p.value = PVAL, logitPar = logitPar,
+        Logistik = stats1, p.value = pval1, logitPar = logitPar,
         logitSe = logitSe, parM0 = prov1$parM0, seM0 = prov1$seM0,
         cov.M0 = prov1$cov.M0, cov.M1 = prov1$cov.M1,
         deltaR2 = deltaR2, alpha = alpha, thr = Q, DIFitems = DIFitems,
         member.type = member.type, match = prov1$match,
         type = type, p.adjust.method = p.adjust.method,
-        adjusted.p = NULL, purification = purify, nrPur = nrPur,
+        adjusted.p = adjusted.p, purification = purify, nrPur = nrPur, puriadjType = puriadjType,
         difPur = difPur, convergence = noLoop, names = colnames(DATA),
         anchor.names = NULL, criterion = criterion, save.output = save.output,
-        output = output
+        output = output,
+        Data = DATA, group = Group
       )
-    }
-    if (!is.null(p.adjust.method)) {
-      df <- switch(RES$type,
-        both = 2,
-        udif = 1,
-        nudif = 1
-      )
-      pval <- 1 - pchisq(RES$Logistik, df)
-      RES$adjusted.p <- p.adjust(pval, method = p.adjust.method)
-      if (min(RES$adjusted.p, na.rm = TRUE) > alpha) {
-        RES$DIFitems <- "No DIF item detected"
-      } else {
-        RES$DIFitems <- which(RES$adjusted.p < alpha)
-      }
     }
     class(RES) <- "Logistic"
     return(RES)
@@ -238,10 +262,6 @@ difLogistic <- function(
   }
   return(resToReturn)
 }
-
-
-
-
 
 # METHODS
 #' @export
@@ -386,8 +406,6 @@ plot.Logistic <- function(
     cat("The plot was not captured!", "\n", sep = "")
   }
 }
-
-
 
 #' @export
 print.Logistic <- function(x, ...) {
