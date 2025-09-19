@@ -223,7 +223,7 @@
 ##' Agresti, A. (1992). A survey of exact inference for contingency tables.
 ##' \emph{Statistical Science, 7}, 131--177, \doi{10.1214/ss/1177011454}
 ##'
-##' Hladká, A., Martinková, P., & Magis, D. (2023). Combining item purification
+##' Hladká, A., Martinková, P., and Magis, D. (2023). Combining item purification
 ##' and multiple comparison adjustment methods in detection of differential item
 ##' functioning. \emph{Multivariate Behavioral Research, 59}(1), 46--61,
 ##' \doi{10.1080/00273171.2023.2205393}
