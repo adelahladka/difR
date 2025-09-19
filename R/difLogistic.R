@@ -171,12 +171,19 @@
 ##' parameter estimates be returned (as lists) for both nested models and all
 ##' items? (default is \code{FALSE}).
 ##' @param purify logical: should the method be used iteratively to purify the
-##' set of anchor items? (default is FALSE). Ignored if \code{match} is not
+##' set of anchor items? (default is \code{FALSE}). Ignored if \code{match} is not
 ##' \code{"score"}.
 ##' @param nrIter numeric: the maximal number of iterations in the item
 ##' purification process. (default is 10).
 ##' @param p.adjust.method either \code{NULL} (default) or the acronym of the
 ##' method for p-value adjustment for multiple comparisons. See \bold{Details}.
+##' @param puriadjType character: type of combination of the item purification
+##'   and the method for p-value adjustment for multiple comparisons. Either
+##'   \code{"simple"} for the item purification followed by the selected
+##'   p-adjustment method (default) or \code{"combined"} for the p-adjustment
+##'   method applied in each iteration of item purification. For details, see
+##'   Hladká, Martinková, and Magis (2024). Argument is ignored when
+##'   \code{purify} is \code{FALSE} or \code{p.adjust.method} is \code{NULL}.
 ##' @param save.output logical: should the output be saved into a text file?
 ##' (default is \code{FALSE}).
 ##' @param output character: a vector of two components. The first component is
@@ -235,6 +242,7 @@
 ##'   \item{nrPur}{the number of iterations in the item purification process. Returned only if \code{purify} is \code{TRUE}.}
 ##'   \item{difPur}{a binary matrix with one row per iteration in the item purification process and one column per item. Zeros and ones in the \emph{i}-th row refer to items which were classified respectively as non-DIF and DIF items at the (\emph{i}-1)-th step. The first row corresponds to the initial classification of the items. Returned only if \code{purify} is \code{TRUE}.}
 ##'   \item{convergence}{logical indicating whether the iterative item purification process stopped before the maximal number of \code{nrItem} allowed iterations. Returned only if \code{purify} is \code{TRUE}.}
+##'   \item{puriadjType}{the value of \code{puriadjType} option. Returned only when \code{purify} is \code{TRUE}.}
 ##'   \item{names}{the names of the items.}
 ##'   \item{anchor.names}{the value of the \code{anchor} argument.}
 ##'   \item{criterion}{the value of the \code{criterion} argument.}
@@ -275,6 +283,11 @@
 ##' detection and effect size: A comparison between logistic regression and
 ##' Mantel-Haenszel procedures. \emph{Educational and Psychological
 ##' Measurement, 64}, 903--915, \doi{10.1177/0013164403261769}
+##'
+##' Hladká, A., Martinková, P., and Magis, D. (2023). Combining item purification
+##' and multiple comparison adjustment methods in detection of differential item
+##' functioning. \emph{Multivariate Behavioral Research, 59}(1), 46--61,
+##' \doi{10.1080/00273171.2023.2205393}
 ##'
 ##' Jodoin, M. G. and Gierl, M. J. (2001). Evaluating Type I error and power
 ##' rates using an effect size measure with logistic regression procedure for
@@ -345,11 +358,15 @@
 ##'  difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE)
 ##'  difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE, nrIter = 5)
 ##'
+##'  # With combination of item purification and multiple comparisons adjustment
+##'  difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple")
+##'  difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")
+##'
 ##'  # With items 1 to 5 set as anchor items
 ##'  difLogistic(verbal, group = 25, focal.name = 1, anchor = 1:5)
 ##'
 ##'  # Using anger trait score as the matching criterion
-##'  difLogistic(verbal,group = 25, focal.name = 1,match = anger)
+##'  difLogistic(verbal,group = 25, focal.name = 1, match = anger)
 ##'
 ##'  # Using trait anger score as the group variable (i.e. testing
 ##'  # for DIF with respect to trait anger score)
@@ -389,6 +406,11 @@ difLogistic <- function(Data, group, focal.name, anchor = NULL, member.type = "g
   if (purify & match[1] != "score") {
     stop("purification not allowed when matching variable is not 'score'",
       call. = FALSE
+    )
+  }
+  if (!is.character(puriadjType) || !puriadjType %in% c("simple", "combined")) {
+    stop("'puriadjType' can be either 'simple' or 'combined'.",
+         call. = FALSE
     )
   }
   internalLog <- function() {
@@ -604,7 +626,7 @@ difLogistic <- function(Data, group, focal.name, anchor = NULL, member.type = "g
         }
         rownames(difPur) <- ro
         colnames(difPur) <- co
-
+      }
       if (is.null(p.adjust.method)) {
         adjusted.p <- NULL
       } else {
@@ -627,7 +649,7 @@ difLogistic <- function(Data, group, focal.name, anchor = NULL, member.type = "g
     }
     class(RES) <- "Logistic"
     return(RES)
-  }}
+  }
   resToReturn <- internalLog()
   if (save.output) {
     if (output[2] == "default") {
@@ -885,9 +907,17 @@ print.Logistic <- function(x, ...) {
       BY = "Benjamini-Yekutieli"
     )
     cat(
-      "Multiple comparisons made with", pAdjMeth, "adjustement of p-values",
-      "\n", "\n"
+      "Multiple comparisons made with", pAdjMeth, "adjustement of p-values\n"
     )
+    if (res$purification) {
+      cat(paste0(
+        "Multiple comparison applied after ",
+        ifelse(res$puriadjType == "simple", "", "each iteration of "),
+        "item purification \n\n"
+      ))
+    } else {
+      cat("\n")
+    }
   }
   cat("Logistic regression DIF statistic:", "\n", "\n")
   df <- switch(res$type,
