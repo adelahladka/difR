@@ -232,8 +232,13 @@
 ##' @export difSIBTEST
 difSIBTEST <- function(
     Data, group, focal.name, type = "udif", anchor = NULL,
-    alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL,
+    alpha = 0.05, purify = FALSE, nrIter = 10, p.adjust.method = NULL, puriadjType = "simple",
     save.output = FALSE, output = c("out", "default")) {
+  if (!is.character(puriadjType) || !puriadjType %in% c("simple", "combined")) {
+    stop("'puriadjType' can be either 'simple' or 'combined'.",
+         call. = FALSE
+    )
+  }
   internalSIBTEST <- function() {
     if (length(group) == 1) {
       if (is.numeric(group)) {
@@ -261,24 +266,50 @@ difSIBTEST <- function(
       } else {
         ANCHOR <- NULL
         for (i in anchor) {
-          ANCHOR <- c(ANCHOR, which(colnames(Data) ==
-            i))
+          ANCHOR <- c(ANCHOR, which(colnames(Data) == i))
         }
         anchor.names <- anchor
       }
     }
+
+    if (purify) {
+      if (is.null(p.adjust.method)) {
+        puri.adj.method <- "none"
+        adj.method <- "none"
+      } else {
+        if (puriadjType == "simple") {
+          puri.adj.method <- "none"
+          adj.method <- p.adjust.method
+        } else {
+          puri.adj.method <- p.adjust.method
+          adj.method <- p.adjust.method
+        }
+      }
+    } else {
+      adj.method <- ifelse(is.null(p.adjust.method), "none", p.adjust.method)
+    }
+
     if (!purify | !is.null(anchor)) {
       PROV <- sibTest(DATA, Group, type = type, anchor = ANCHOR)
-      if (min(PROV$p.value, na.rm = TRUE) >= alpha) {
+      PVAL <- PROV$p.value
+      P.ADJUST <- p.adjust(PVAL, method = adj.method)
+      if (min(P.ADJUST, na.rm = TRUE) >= alpha) {
         DIFitems <- "No DIF item detected"
       } else {
-        DIFitems <- which(!is.na(PROV$p.value) & PROV$p.value < alpha)
+        DIFitems <- which(!is.na(PVAL) & P.ADJUST < alpha)
       }
+
+      if (is.null(p.adjust.method)) {
+        adjusted.p <- NULL
+      } else {
+        adjusted.p <- P.ADJUST
+      }
+
       RES <- list(
         Beta = PROV$Beta, SE = PROV$SE, X2 = PROV$X2,
         df = PROV$df, p.value = PROV$p.value, type = type,
         alpha = alpha, DIFitems = DIFitems, p.adjust.method = p.adjust.method,
-        adjusted.p = NULL, purification = purify, names = colnames(DATA),
+        adjusted.p = adjusted.p, purification = purify, names = colnames(DATA),
         anchor.names = anchor.names, save.output = save.output,
         output = output
       )
@@ -301,11 +332,12 @@ difSIBTEST <- function(
       noLoop <- FALSE
       prov1 <- sibTest(DATA, Group, type = type)
       pval1 <- prov1$p.value
-      if (min(pval1, na.rm = TRUE) >= alpha) {
+      p.adjust1 <- p.adjust(pval1, method = puri.adj.method)
+      if (min(p.adjust1, na.rm = TRUE) >= alpha) {
         DIFitems <- "No DIF item detected"
         noLoop <- TRUE
       } else {
-        dif <- which(!is.na(pval1) & pval1 < alpha)
+        dif <- which(!is.na(pval1) & p.adjust1 < alpha)
         difPur <- rep(0, length(pval1))
         difPur[dif] <- 1
         repeat {
@@ -325,10 +357,12 @@ difSIBTEST <- function(
             }
             prov2 <- sibTest(DATA, Group, type = type, anchor = nodif)
             pval2 <- prov2$p.value
-            if (min(pval2, na.rm = TRUE) >= alpha) {
+            p.adjust2 <- p.adjust(pval2, method = puri.adj.method)
+
+            if (min(p.adjust2, na.rm = TRUE) >= alpha) {
               dif2 <- NULL
             } else {
-              dif2 <- which(!is.na(pval2) & pval2 < alpha)
+              dif2 <- which(!is.na(pval2) & p.adjust2 < alpha)
             }
             difPur <- rbind(difPur, rep(0, ncol(DATA)))
             difPur[nrPur + 1, dif2] <- 1
@@ -347,11 +381,12 @@ difSIBTEST <- function(
           }
         }
         pval1 <- pval2
+        p.adjust1 <- p.adjust(pval1, method = adj.method)
         prov1 <- prov2
-        if (min(pval1, na.rm = TRUE) >= alpha) {
+        if (min(p.adjust1, na.rm = TRUE) >= alpha) {
           DIFitems <- "No DIF item detected"
         } else {
-          DIFitems <- which(!is.na(pval1) & pval1 < alpha)
+          DIFitems <- which(!is.na(pval1) & p.adjust1 < alpha)
         }
       }
       if (!is.null(difPur)) {
@@ -365,24 +400,22 @@ difSIBTEST <- function(
         rownames(difPur) <- ro
         colnames(difPur) <- co
       }
+
+      if (is.null(p.adjust.method)) {
+        adjusted.p <- NULL
+      } else {
+        adjusted.p <- p.adjust1
+      }
+
       RES <- list(
         Beta = prov1$Beta, SE = prov1$SE, X2 = prov1$X2,
         df = prov1$df, p.value = pval1, type = type,
         alpha = alpha, DIFitems = DIFitems, p.adjust.method = p.adjust.method,
-        adjusted.p = NULL, purification = purify, nrPur = nrPur,
+        adjusted.p = adjusted.p, puriadjType = puriadjType, purification = purify, nrPur = nrPur,
         difPur = difPur, convergence = noLoop, names = colnames(DATA),
         anchor.names = NULL, save.output = save.output,
         output = output
       )
-    }
-    if (!is.null(p.adjust.method)) {
-      pval <- RES$p.value
-      RES$adjusted.p <- p.adjust(pval, method = p.adjust.method)
-      if (min(RES$adjusted.p, na.rm = TRUE) > alpha) {
-        RES$DIFitems <- "No DIF item detected"
-      } else {
-        RES$DIFitems <- which(RES$adjusted.p < alpha)
-      }
     }
     class(RES) <- "SIBTEST"
     return(RES)
