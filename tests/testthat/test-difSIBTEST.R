@@ -1,4 +1,4 @@
-test_that("difLogistic - examples at help page", {
+test_that("difSIBTEST - examples at help page", {
   # skip_on_cran()
   # skip_on_os("linux")
 
@@ -35,4 +35,12 @@ test_that("difLogistic - examples at help page", {
   # With items 1 to 5 set as anchor items
   expect_snapshot(difSIBTEST(verbal, group = "Gender", focal.name = 1, anchor = 1:5))
   expect_snapshot(difSIBTEST(verbal, group = "Gender", focal.name = 1, anchor = 1:5, purify = TRUE))
+
+  # With combination of item purification and multiple comparisons adjustment
+  expect_snapshot(difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple"))
+  expect_snapshot((r4 <- difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")))
+  # saveRDS(r4, file = "tests/testthat/fixtures/difSIBTEST_examples_4.rds")
+  r4_expected <- readRDS(test_path("fixtures", "difSIBTEST_examples_4.rds"))
+  expect_equal(r4, r4_expected)
+
 })

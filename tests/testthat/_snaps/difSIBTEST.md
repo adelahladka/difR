@@ -1,4 +1,4 @@
-# difLogistic - examples at help page
+# difSIBTEST - examples at help page
 
     Code
       (r1 <- difSIBTEST(verbal, group = 25, focal.name = 1))
@@ -117,8 +117,8 @@
        
       No set of anchor items was provided 
        
-      Multiple comparisons made with Benjamini-Hochberg adjustement of p-values 
-       
+      Multiple comparisons made with Benjamini-Hochberg adjustement of p-values
+      
                   Beta    SE      X2 Stat. P-value Adj. P  
       S1wantCurse  0.1078  0.1154  0.8736   0.3500  0.7436 
       S1WantScold  0.0017  0.1229  0.0002   0.9892  0.9892 
@@ -378,6 +378,112 @@
        S3DoCurse
        S3DoScold
       
+       
+      Output was not captured! 
+
+---
+
+    Code
+      difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, p.adjust.method = "BH",
+        puriadjType = "simple")
+    Output
+      
+      Detection of Differential Item Functioning using SIBTEST method 
+      with item purification
+      
+      Convergence reached after 6 iterations
+      
+      Investigation of uniform DIF using SIBTEST (Shealy and Stout, 1993) 
+       
+      No set of anchor items was provided 
+       
+      Multiple comparisons made with Benjamini-Hochberg adjustement of p-values
+      Multiple comparison applied after item purification 
+      
+                  Beta    SE      X2 Stat. P-value Adj. P  
+      S1wantCurse  0.0333  0.0935  0.1268   0.7218  0.8349 
+      S1WantScold -0.0705  0.1195  0.3480   0.5553  0.8260 
+      S1WantShout  0.1666  0.1180  1.9928   0.1581  0.7351 
+      S2WantCurse  0.0366  0.1492  0.0601   0.8063  0.8796 
+      S2WantScold -0.0069  0.1404  0.0024   0.9609  0.9953 
+      S2WantShout  0.1073  0.1311  0.6697   0.4131  0.8260 
+      S3WantCurse  0.0832  0.1328  0.3926   0.5309  0.8260 
+      S3WantScold -0.0658  0.1351  0.2371   0.6263  0.8260 
+      S3WantShout  0.1184  0.1271  0.8682   0.3515  0.7823 
+      S4WantCurse  0.0671  0.0999  0.4513   0.5017  0.8260 
+      S4WantScold -0.1998  0.1503  1.7668   0.1838  0.7351 
+      S4WantShout  0.0970  0.1038  0.8723   0.3503  0.7823 
+      S1DoCurse    0.1609  0.1577  1.0414   0.3075  0.7823 
+      S1DoScold   -0.0996  0.0899  1.2256   0.2683  0.7823 
+      S1DoShout    0.1004  0.1094  0.8430   0.3585  0.7823 
+      S2DoCurse   -0.0857  0.1670  0.2636   0.6077  0.8260 
+      S2DoScold    0.0729  0.1370  0.2829   0.5948  0.8260 
+      S2DoShout    0.2203  0.1437  2.3525   0.1251  0.7351 
+      S3DoCurse   -0.1938  0.1115  3.0220   0.0821  0.7351 
+      S3DoScold   -0.2081  0.1051  3.9240   0.0476  0.7351 
+      S3DoShout   -0.0416  0.1207  0.1186   0.7305  0.8349 
+      S4DoCurse   -0.0646  0.1440  0.2010   0.6539  0.8260 
+      S4DoScold   -0.1665  0.1233  1.8235   0.1769  0.7351 
+      S4DoShout   -0.0008  0.1351  0.0000   0.9953  0.9953 
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1  
+      
+      Detection threshold: 3.8415 (significance level: 0.05)
+      
+      Items detected as DIF items: No DIF item detected 
+       
+      Output was not captured! 
+
+---
+
+    Code
+      (r4 <- difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE,
+        p.adjust.method = "BH", puriadjType = "combined"))
+    Output
+      
+      Detection of Differential Item Functioning using SIBTEST method 
+      with item purification
+      
+      Convergence reached after 0 iteration
+      
+      Investigation of uniform DIF using SIBTEST (Shealy and Stout, 1993) 
+       
+      No set of anchor items was provided 
+       
+      Multiple comparisons made with Benjamini-Hochberg adjustement of p-values
+      Multiple comparison applied after each iteration of item purification 
+      
+                  Beta    SE      X2 Stat. P-value Adj. P  
+      S1wantCurse  0.1078  0.1154  0.8736   0.3500  0.7436 
+      S1WantScold  0.0017  0.1229  0.0002   0.9892  0.9892 
+      S1WantShout  0.1426  0.1308  1.1891   0.2755  0.7436 
+      S2WantCurse  0.0871  0.1251  0.4842   0.4865  0.7436 
+      S2WantScold  0.0891  0.1408  0.4008   0.5267  0.7436 
+      S2WantShout  0.1118  0.1147  0.9501   0.3297  0.7436 
+      S3WantCurse -0.0249  0.1126  0.0488   0.8251  0.9001 
+      S3WantScold -0.1085  0.1098  0.9755   0.3233  0.7436 
+      S3WantShout -0.0813  0.1194  0.4633   0.4961  0.7436 
+      S4WantCurse  0.0899  0.1213  0.5494   0.4586  0.7436 
+      S4WantScold -0.0855  0.1154  0.5490   0.4587  0.7436 
+      S4WantShout  0.0167  0.1249  0.0179   0.8936  0.9324 
+      S1DoCurse    0.0841  0.1323  0.4041   0.5250  0.7436 
+      S1DoScold   -0.1562  0.0968  2.6043   0.1066  0.6361 
+      S1DoShout    0.1436  0.1061  1.8333   0.1757  0.6764 
+      S2DoCurse    0.0743  0.1865  0.1588   0.6903  0.8591 
+      S2DoScold   -0.0289  0.1222  0.0558   0.8132  0.9001 
+      S2DoShout    0.1975  0.1313  2.2626   0.1325  0.6361 
+      S3DoCurse   -0.2674  0.1137  5.5273   0.0187  0.4493 
+      S3DoScold   -0.2081  0.1051  3.9240   0.0476  0.5712 
+      S3DoShout   -0.1704  0.1322  1.6623   0.1973  0.6764 
+      S4DoCurse   -0.0737  0.1568  0.2209   0.6384  0.8511 
+      S4DoScold   -0.2290  0.1321  3.0068   0.0829  0.6361 
+      S4DoShout    0.0396  0.1088  0.1325   0.7159  0.8591 
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1  
+      
+      Detection threshold: 3.8415 (significance level: 0.05)
+      
+      Items detected as DIF items: No DIF item detected 
        
       Output was not captured! 
 
