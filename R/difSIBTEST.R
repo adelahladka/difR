@@ -110,6 +110,13 @@
 ##' purification process (default is 10).
 ##' @param p.adjust.method either \code{NULL} (default) or the acronym of the
 ##' method for p-value adjustment for multiple comparisons. See \bold{Details}.
+##' @param puriadjType character: type of combination of the item purification
+##'   and the method for p-value adjustment for multiple comparisons. Either
+##'   \code{"simple"} for the item purification followed by the selected
+##'   p-adjustment method (default) or \code{"combined"} for the p-adjustment
+##'   method applied in each iteration of item purification. For details, see
+##'   Hladká, Martinková, and Magis (2024). Argument is ignored when
+##'   \code{purify} is \code{FALSE} or \code{p.adjust.method} is \code{NULL}.
 ##' @param save.output logical: should the output be saved into a text file?
 ##' (default is \code{FALSE}).
 ##' @param output character: a vector of two components. The first component is
@@ -146,6 +153,7 @@
 ##'   \item{nrPur}{the number of iterations in the item purification process. Returned only if \code{purify} is \code{TRUE}.}
 ##'   \item{difPur}{a binary matrix with one row per iteration in the item purification process and one column per item. Zeros and ones in the \emph{i}-th row refer to items which were classified respectively as non-DIF and DIF items at the (\emph{i}-1)-th step. The first row corresponds to the initial classification of the items. Returned only if \code{purify} is \code{TRUE}.}
 ##'   \item{convergence}{logical indicating whether the iterative item purification process stopped before the maximal number \code{nrIter} of allowed iterations. Returned only if \code{purify} is \code{TRUE}.}
+##'   \item{puriadjType}{the value of \code{puriadjType} option. Returned only when \code{purify} is \code{TRUE}.}
 ##'   \item{names}{the names of the items or \code{NULL} if the items have no name.}
 ##'   \item{anchor.names}{the value of the \code{anchor} argument.}
 ##'   \item{save.output}{the value of the \code{save.output} argument.}
@@ -167,6 +175,11 @@
 ##' Chalmers, R. P. (2018). Improving the Crossing-SIBTEST statistic for
 ##' detecting non-uniform DIF. \emph{Psychometrika, 83}(2), 376--386,
 ##' \doi{10.1007/s11336-017-9583-8}
+##'
+##' Hladká, A., Martinková, P., and Magis, D. (2023). Combining item purification
+##' and multiple comparison adjustment methods in detection of differential item
+##' functioning. \emph{Multivariate Behavioral Research, 59}(1), 46--61,
+##' \doi{10.1080/00273171.2023.2205393}
 ##'
 ##' Kim, J., and Oshima, T. C. (2013). Effect of multiple testing adjustment in
 ##' differential item functioning detection. \emph{Educational and
@@ -209,6 +222,10 @@
 ##'  # With item purification
 ##'  difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE)
 ##'  r2 <- difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, nrIter = 5)
+##'
+##'  # With combination of item purification and multiple comparisons adjustment
+##'  difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple")
+##'  difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")
 ##'
 ##'  # With items 1 to 5 set as anchor items
 ##'  difSIBTEST(verbal, group = "Gender", focal.name = 1, anchor = 1:5)
@@ -627,9 +644,17 @@ print.SIBTEST <- function(x, ...) {
       BY = "Benjamini-Yekutieli"
     )
     cat(
-      "Multiple comparisons made with", pAdjMeth, "adjustement of p-values",
-      "\n", "\n"
+      "Multiple comparisons made with", pAdjMeth, "adjustement of p-values\n"
     )
+    if (res$purification) {
+      cat(paste0(
+        "Multiple comparison applied after ",
+        ifelse(res$puriadjType == "simple", "", "each iteration of "),
+        "item purification \n\n"
+      ))
+    } else {
+      cat("\n")
+    }
   }
   if (is.null(res$p.adjust.method)) {
     symb <- symnum(res$p.value, c(
