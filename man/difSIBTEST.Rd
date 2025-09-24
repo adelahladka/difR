@@ -20,6 +20,16 @@ difSIBTEST(
   save.output = FALSE,
   output = c("out", "default")
 )
+
+\method{plot}{SIBTEST}(
+  x,
+  pch = 8,
+  number = TRUE,
+  col = "red",
+  save.plot = FALSE,
+  save.options = c("plot", "default", "pdf"),
+  ...
+)
 }
 \arguments{
 \item{Data}{numeric: either the data matrix only, or the data matrix plus
@@ -65,7 +75,7 @@ Hladká, Martinková, and Magis (2024). Argument is ignored when
 the name of the output file, the second component is either the file path
 or \code{"default"} (default value). See \bold{Details}.}
 
-\item{x}{the result from a \code{SIBTEST} class object.}
+\item{x}{the result from a \code{"SIBTEST"} class object.}
 
 \item{pch, col}{type of usual \code{pch} and \code{col} graphical options.}
 
@@ -225,8 +235,10 @@ inference.
  r2 <- difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, nrIter = 5)
 
  # With combination of item purification and multiple comparisons adjustment
- difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple")
- difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")
+ difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE,
+            p.adjust.method = "BH", puriadjType = "simple")
+ difSIBTEST(verbal, group = 25, focal.name = 1, purify = TRUE,
+            p.adjust.method = "BH", puriadjType = "combined")
 
  # With items 1 to 5 set as anchor items
  difSIBTEST(verbal, group = "Gender", focal.name = 1, anchor = 1:5)

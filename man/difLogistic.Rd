@@ -24,6 +24,22 @@ difLogistic(
   save.output = FALSE,
   output = c("out", "default")
 )
+
+\method{plot}{Logistic}(
+  x,
+  plot = "lrStat",
+  item = 1,
+  itemFit = "best",
+  pch = 8,
+  number = TRUE,
+  col = "red",
+  colIC = rep("black", 2),
+  ltyIC = c(1, 2),
+  save.plot = FALSE,
+  save.options = c("plot", "default", "pdf"),
+  group.names = NULL,
+  ...
+)
 }
 \arguments{
 \item{Data}{numeric: either the data matrix only, or the data matrix plus
@@ -89,7 +105,7 @@ Hladká, Martinková, and Magis (2024). Argument is ignored when
 the name of the output file, the second component is either the file path
 or \code{"default"} (default value). See \bold{Details}.}
 
-\item{x}{the result from a \code{Logistik} class object.}
+\item{x}{the result from a \code{"Logistik"} class object.}
 
 \item{plot}{character: the type of plot, either \code{"lrStat"} (default)
 or \code{"itemCurve"}. See \bold{Details}.}
@@ -341,8 +357,10 @@ The third component is the figure format, with allowed values \code{"pdf"}
  difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE, nrIter = 5)
 
  # With combination of item purification and multiple comparisons adjustment
- difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple")
- difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")
+ difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE,
+             p.adjust.method = "BH", puriadjType = "simple")
+ difLogistic(verbal, group = "Gender", focal.name = 1, purify = TRUE,
+             p.adjust.method = "BH", puriadjType = "combined")
 
  # With items 1 to 5 set as anchor items
  difLogistic(verbal, group = 25, focal.name = 1, anchor = 1:5)

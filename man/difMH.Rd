@@ -23,6 +23,16 @@ difMH(
   save.output = FALSE,
   output = c("out", "default")
 )
+
+\method{plot}{MH}(
+  x,
+  pch = 8,
+  number = TRUE,
+  col = "red",
+  save.plot = FALSE,
+  save.options = c("plot", "default", "pdf"),
+  ...
+)
 }
 \arguments{
 \item{Data}{numeric: either the data matrix only, or the data matrix plus
@@ -79,7 +89,7 @@ Hladká, Martinková, and Magis (2024). Argument is ignored when
 the name of the output file, the second component is either the file path
 or \code{"default"} (default value). See \bold{Details}.}
 
-\item{x}{the result from a \code{MH} class object.}
+\item{x}{the result from a \code{"MH"} class object.}
 
 \item{pch, col}{type of usual \code{pch} and \code{col} graphical options.}
 
@@ -103,7 +113,7 @@ A list of class "MH" with the following arguments:
 \describe{
   \item{MH}{the values of the Mantel-Haenszel DIF statistics (either exact or asymptotic).}
   \item{p.value}{the p-values for the Mantel-Haenszel statistics (either exact or asymptotic).}
-  \item{alphaMH}{the values of the mantel-Haenszel testimates of common odds ratios. Returned only if \code{exact} is \code{FALSE}.}
+  \item{alphaMH}{the values of the mantel-Haenszel estimates of common odds ratios. Returned only if \code{exact} is \code{FALSE}.}
   \item{varLambda}{the values of the variances of the log odds-ratio statistics. Returned only if \code{exact} is \code{FALSE}.}
   \item{MHstat}{the value of the \code{MHstat} argument. Returned only if \code{exact} is \code{FALSE}.}
   \item{alpha}{the value of \code{alpha} argument.}
@@ -277,8 +287,10 @@ JPEG file. Note that no plot is returned for exact inference.
  difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, nrIter = 5)
 
  # With combination of item purification and multiple comparisons adjustment
- difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "simple")
- difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE, p.adjust.method = "BH", puriadjType = "combined")
+ difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE,
+       p.adjust.method = "BH", puriadjType = "simple")
+ difMH(verbal, group = "Gender", focal.name = 1, purify = TRUE,
+       p.adjust.method = "BH", puriadjType = "combined")
 
  # Without continuity correction and with 0.01 significance level
  difMH(verbal, group = "Gender", focal.name = 1, alpha = 0.01, correct = FALSE)
