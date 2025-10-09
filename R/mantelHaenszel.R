@@ -74,6 +74,17 @@ mantelHaenszel <- function (data, member, match = "score", correct = TRUE, exact
     }
   }
 
+  if (any(resAlpha == Inf | is.na(resAlpha) | resAlpha == 0)) {
+    susp_items <- which(resAlpha == Inf | is.na(resAlpha) | resAlpha == 0)
+    warning(paste0(
+      "Sparse data detected for ",
+      ifelse(length(susp_items) > 1, "items ", "item "),
+      paste(susp_items, collapse = ", "),
+      ": too many zeros in contingency tables. ",
+      "This may occur when there are too few respondents, leading to infinite or undefined alpha/delta estimates."
+    ), call. = FALSE)
+  }
+
   if (match[1] != "score") mess <- "matching variable" else mess <- "score"
 
   if (exact)
